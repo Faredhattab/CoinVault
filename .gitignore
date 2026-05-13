@@ -27,6 +27,13 @@ venv/
 supabase/.branches/
 supabase/.temp/
 
+# SpecKit and development workflow files
+.specify/
+.agents/
+.claude/skills/
+specs/
+docs/
+
 # OS / editor
 .DS_Store
 Thumbs.db
