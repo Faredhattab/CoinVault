@@ -12,77 +12,61 @@ A cloud-native, mobile-first multilingual web application for managing and showc
 
 - **Node.js** 20.9 or newer
 - **Python** 3.12 or newer
-- **Docker** (or compatible container runtime for Supabase)
+- **Docker Desktop** (for local Supabase services)
 - **Supabase CLI** (install: `npm install -g supabase`)
 
-### 1. Clone and Setup
+### ⚡ Super Quick Start
 
 ```bash
-git clone <repository-url>
+# 1. Clone and setup
+git clone https://github.com/Faredhattab/CoinVault.git
 cd CoinVault
-```
 
-### 2. Configure Environment
-
-```bash
-# Copy the environment template
-cp .env.example .env
-
-# Edit .env with your local configuration
-# For Phase 1, use the local Supabase defaults
-```
-
-### 3. Start Local Supabase Services
-
-```bash
-# Start local PostgreSQL, Auth, and Storage
+# 2. Start Supabase (Docker must be running!)
 supabase start
+# Save the anon key and service_role key from output
 
-# Note the output - you'll need the anon key and service_role key
-# Update your .env file with these values
-```
+# 3. Configure environment
+cp .env.example .env
+# Edit .env and paste the keys from step 2
 
-### 4. Start Backend (FastAPI)
-
-```bash
+# 4. Install & start backend (new terminal)
 cd backend
-
-# Install dependencies
 pip install -e ".[dev]"
-
-# Start the development server
 python -m uvicorn coinvault.main:app --app-dir src --reload
 
-# Backend will be available at http://localhost:8000
-# API docs at http://localhost:8000/docs
-```
-
-### 5. Start Frontend (Next.js)
-
-```bash
+# 5. Install & start frontend (another terminal)
 cd frontend
-
-# Install dependencies
 npm install
-
-# Start the development server
 npm run dev
-
-# Frontend will be available at http://localhost:3000
 ```
 
-### 6. Verify Setup
+### ✅ Verify Setup
 
-Visit the following URLs:
+Visit these URLs to confirm everything works:
 
-- **Public Page (English)**: http://localhost:3000/en
-- **Public Page (Arabic)**: http://localhost:3000/ar
-- **Admin Page**: http://localhost:3000/en/admin
-- **Health Check**: http://localhost:3000/en/health
-- **API Health**: http://localhost:8000/health
+- **Frontend**: http://localhost:3000/en
+- **Backend Health**: http://localhost:8000/health
 - **API Docs**: http://localhost:8000/docs
+- **Supabase Studio**: http://localhost:54323
 
-All services should show as healthy if setup is correct.
+---
+
+## 📖 Detailed Setup Guide
+
+**First time setup?** Need help with Docker, Supabase, or troubleshooting?
+
+👉 **[READ THE COMPLETE SETUP GUIDE →](SETUP-GUIDE.md)**
+
+The setup guide includes:
+- ✅ Step-by-step prerequisites installation (Node.js, Python, Docker, Supabase)
+- ✅ Understanding Supabase architecture and why we use it
+- ✅ Detailed Supabase installation and configuration
+- ✅ Complete environment setup
+- ✅ How to run and verify each service
+- ✅ How to run all tests (backend, frontend, UI)
+- ✅ Common troubleshooting scenarios
+- ✅ Daily development workflows
 
 ## 📚 Project Structure
 
