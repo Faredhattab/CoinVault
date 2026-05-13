@@ -26,7 +26,7 @@
 
 **Why this priority**: [Explain the value and why it has this priority level]
 
-**Independent Test**: [Describe how this can be tested independently - e.g., "Can be fully tested by [specific action] and delivers [specific value]"]
+**Independent Test**: [Describe how this can be tested independently, including mobile-first responsive behavior and English/Arabic RTL behavior when user-facing]
 
 **Acceptance Scenarios**:
 
@@ -74,6 +74,9 @@
 
 - What happens when [boundary condition]?
 - How does system handle [error scenario]?
+- How does the experience behave on the smallest supported mobile viewport?
+- How does the experience behave when switching between English and Arabic RTL?
+- What cloud runtime, configuration, or service failure modes can affect this feature?
 
 ## Requirements *(mandatory)*
 
@@ -89,11 +92,16 @@
 - **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
+- **FR-006**: User-facing interfaces MUST be mobile-first, responsive, accessible, and minimalist.
+- **FR-007**: Frontend requirements MUST assume Next.js unless an approved exception is documented.
+- **FR-008**: Feature documentation MUST be updated with user behavior, test approach, and operational assumptions.
+- **FR-009**: User-facing text MUST support English as the default language and Arabic as a fully supported RTL language.
+- **FR-010**: Backend requirements MUST assume FastAPI with typed request/response contracts unless an approved exception is documented.
 
 *Example of marking unclear requirements:*
 
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-011**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
+- **FR-012**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
 ### Key Entities *(include if feature involves data)*
 
@@ -113,6 +121,9 @@
 - **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+- **SC-005**: [Mobile UX metric, e.g., "Primary task can be completed on a 360px-wide viewport without horizontal scrolling"]
+- **SC-006**: [Quality metric, e.g., "Automated tests cover every production function introduced or changed by this feature"]
+- **SC-007**: [Localization metric, e.g., "Primary task succeeds in English and Arabic RTL with no clipped or overlapping text"]
 
 ## Assumptions
 
@@ -123,6 +134,7 @@
 -->
 
 - [Assumption about target users, e.g., "Users have stable internet connectivity"]
-- [Assumption about scope boundaries, e.g., "Mobile support is out of scope for v1"]
+- [Assumption about responsive scope, e.g., "Mobile support is required for v1"]
+- [Assumption about languages, e.g., "English and Arabic are both required for v1"]
 - [Assumption about data/environment, e.g., "Existing authentication system will be reused"]
 - [Dependency on existing system/service, e.g., "Requires access to the existing user profile API"]

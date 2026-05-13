@@ -1,0 +1,49 @@
+import { ServiceStatusList, type FoundationHealth } from "@/components/ServiceStatusList";
+import { getMessages, normalizeLocale } from "@/i18n";
+
+async function getHealth(): Promise<FoundationHealth> {
+  const fallback: FoundationHealth = {
+    status: "unavailable",
+    checked_at: new Date().toISOString(),
+    services: {
+      web: { status: "ok", message: "Frontend shell reachable" },
+      backend: { status: "unavailable", message: "Backend health endpoint unavailable" },
+      database: { status: "unavailable", message: "Not checked" },
+      auth: { status: "unavailable", message: "Not checked" },
+      storage: { status: "unavailable", message: "Not checked" }
+    }
+  };
+
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
+    const response = await fetch(`${baseUrl}/health`, { cache: "no-store" });
+    if (!response.ok) {
+      return fallback;
+    }
+    return (await response.json()) as FoundationHealth;
+  } catch {
+    return fallback;
+  }
+}
+
+export default async function HealthPage({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale: rawLocale } = await params;
+  const locale = normalizeLocale(rawLocale);
+  const messages = getMessages(locale);
+  const health = await getHealth();
+
+  return (
+    <main className="shell">
+      <section className="panel" aria-labelledby="health-title">
+        <p className="eyebrow">{messages.common.phase}</p>
+        <h1 id="health-title">{messages.health.title}</h1>
+        <p>{messages.health.description}</p>
+        <ServiceStatusList health={health} labels={messages.health} />
+      </section>
+    </main>
+  );
+}
