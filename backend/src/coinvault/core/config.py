@@ -3,6 +3,13 @@ from __future__ import annotations
 import os
 from collections.abc import Iterable
 from dataclasses import dataclass
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+# Load .env file from project root (3 levels up from this file)
+env_path = Path(__file__).parents[4] / ".env"
+load_dotenv(dotenv_path=env_path)
 
 SECRET_MARKERS = ("KEY", "SECRET", "TOKEN", "PASSWORD")
 
