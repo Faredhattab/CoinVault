@@ -1,0 +1,31 @@
+# Force LF line endings for all text files
+* text=auto eol=lf
+
+# Windows batch files should use CRLF
+*.bat eol=crlf
+*.cmd eol=crlf
+
+# Explicitly declare text files
+*.py text
+*.ts text
+*.tsx text
+*.js text
+*.jsx text
+*.json text
+*.md text
+*.yml text
+*.yaml text
+*.toml text
+*.sql text
+*.sh text
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary

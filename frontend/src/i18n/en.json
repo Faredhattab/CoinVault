@@ -1,0 +1,31 @@
+{
+  "common": {
+    "phase": "Phase 1 foundation",
+    "navigation": "Foundation navigation"
+  },
+  "public": {
+    "title": "CoinVault public collection shell",
+    "description": "The public gallery foundation is ready for future collection browsing. This screen is intentionally a placeholder.",
+    "adminLink": "Open admin shell",
+    "healthLink": "Check foundation health"
+  },
+  "admin": {
+    "title": "CoinVault admin shell",
+    "description": "The private collection management foundation is ready for future authentication and item workflows.",
+    "publicLink": "Open public shell",
+    "healthLink": "Check foundation health"
+  },
+  "health": {
+    "title": "Foundation health",
+    "description": "Review the local web, backend, database, authentication, and storage foundations.",
+    "aggregate": "Overall status",
+    "web": "Web",
+    "backend": "Backend",
+    "database": "Database",
+    "auth": "Authentication",
+    "storage": "Storage",
+    "ok": "OK",
+    "degraded": "Degraded",
+    "unavailable": "Unavailable"
+  }
+}
