@@ -30,9 +30,10 @@ supabase/.temp/
 # SpecKit and development workflow files
 .specify/
 .agents/
-.claude/skills/
+.claude/
 specs/
 docs/
+
 
 # OS / editor
 .DS_Store
