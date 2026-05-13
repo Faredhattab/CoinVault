@@ -255,59 +255,19 @@ See [PLAN.md](PLAN.md) for complete phase details.
 
 ## 🐛 Troubleshooting
 
-### Health check shows services unavailable
+Having issues? Check the **[Complete Setup Guide](SETUP-GUIDE.md)** for detailed troubleshooting steps.
 
-```bash
-# Ensure Supabase is running
-supabase status
-
-# If not running, start it
-supabase start
-
-# Check your .env file has the correct SUPABASE_* values
-```
-
-### Backend won't start
-
-```bash
-# Ensure Python 3.12 is being used
-python --version
-
-# Reinstall dependencies
-cd backend
-pip install -e ".[dev]"
-```
-
-### Frontend won't start
-
-```bash
-# Clear Next.js cache
-cd frontend
-rm -rf .next
-
-# Reinstall dependencies
-npm install
-
-# Try again
-npm run dev
-```
-
-### CORS errors in browser
-
-Ensure your `.env` has:
-```
-CORS_ORIGINS=http://localhost:3000
-```
-
-And restart the backend.
+**Quick fixes:**
+- Services unavailable? Run `supabase status` and ensure Supabase is running
+- Backend won't start? Verify Python 3.12+ with `python --version`
+- Frontend won't start? Clear cache: `rm -rf .next && npm install`
+- CORS errors? Check `CORS_ORIGINS=http://localhost:3000` in `.env`
 
 ## 📞 Support
 
-For questions or issues:
-
-1. Check [specs/001-project-foundation/quickstart.md](specs/001-project-foundation/quickstart.md)
-2. Review [PLAN.md](PLAN.md) for architecture details
-3. See [Constitution](.specify/memory/constitution.md) for development standards
+- **[Complete Setup Guide](SETUP-GUIDE.md)** - Detailed setup and troubleshooting
+- **[PLAN.md](PLAN.md)** - Architecture and roadmap
+- **[Constitution](.specify/memory/constitution.md)** - Development standards
 
 ## 📄 License
 

@@ -3,7 +3,9 @@
     "allow": [
       "Bash(npx supabase *)",
       "Bash(git push *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(gh pr *)"
     ]
   }
 }
