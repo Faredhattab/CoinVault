@@ -24,7 +24,7 @@ class Settings:
     supabase_anon_key: str = "replace-with-local-anon-key"
     supabase_service_role_key: str = "replace-with-local-service-role-key"
     supabase_db_url: str = "postgresql://postgres:postgres@127.0.0.1:54322/postgres"
-    supabase_storage_url: str = "http://127.0.0.1:54321/storage/v1"
+    supabase_storage_url: str = "http://127.0.0.1:54321/storage/v1/s3"
 
     @classmethod
     def from_env(cls) -> Settings:

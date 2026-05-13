@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npx supabase *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(git add *)"
     ]
   }
 }
