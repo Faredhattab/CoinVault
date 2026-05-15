@@ -7,12 +7,17 @@ from coinvault.core.config import Settings
 
 def admin_account_seeded(client: Client, settings: Settings) -> tuple[bool, str]:
     try:
-        # Check if the admin email exists in the users list
-        response = client.auth.admin.list_users()
-        users = response
-        
         admin_email = settings.initial_admin_email
-        if any(user.email == admin_email for user in users):
+        # Check profiles table - admin client bypasses RLS
+        response = (
+            client.table("profiles")
+            .select("id")
+            .eq("email", admin_email)
+            .eq("role", "admin")
+            .execute()
+        )
+        
+        if response.data and len(response.data) > 0:
             return True, f"Admin account ({admin_email}) is seeded"
         
         return False, f"Admin account ({admin_email}) is not seeded"
