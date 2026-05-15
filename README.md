@@ -28,7 +28,7 @@ npm install
 npm run dev
 ```
 
-**Verify**: [localhost:3000/en](http://localhost:3000/en) | [localhost:8000/health](http://localhost:8000/health)
+**Verify**: [localhost:3000/en](http://localhost:3000/en) | [localhost:8000/api/v1/health](http://localhost:8000/api/v1/health)
 
 ---
 
@@ -44,7 +44,8 @@ npm run dev
 - **Overall**: 40/49 tests passing (82%)
 
 ### Known Issues
-- **E2E Tests**: Login tests timeout due to environment configuration. Backend login endpoint works correctly (verified via curl and Python SDK). Issue is ghost processes on port 8000 preventing clean backend startup. **Resolution**: Use port 8001 for backend (configured in `.env` files).
+- **E2E Tests**: Login tests timeout due to environment configuration. Backend login endpoint works correctly (verified via curl and Python SDK). Issue was ghost processes on port 8000 preventing clean backend startup. 
+- **Port Configuration**: Backend runs on **port 8000**. Ensure `NEXT_PUBLIC_API_BASE_URL=http://localhost:8000` in `.env` and `frontend/.env.local` for proper frontend-backend communication.
 
 ### Security Highlights
 - ✅ Multi-layer RBAC (frontend → backend → database)

@@ -77,6 +77,37 @@ p {
   color: #fff;
 }
 
+.status-container {
+  display: grid;
+  gap: 16px;
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.status-timestamp {
+  color: #5d6558;
+}
+
+.status-info {
+  display: grid;
+  gap: 2px;
+}
+
+.status-name {
+  font-size: 1rem;
+}
+
+.status-message {
+  font-size: 0.85rem;
+  color: #5d6558;
+}
+
 .status-list {
   display: grid;
   gap: 8px;

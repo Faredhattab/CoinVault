@@ -73,9 +73,15 @@ Visit these URLs to confirm all services are healthy:
 | Service | URL | Expected |
 |---------|-----|----------|
 | **Frontend** | http://localhost:3000/en | Homepage loads |
+| **Frontend Health** | http://localhost:3000/en/health | All services show "Healthy" |
 | **Backend Health** | http://localhost:8000/api/v1/health | `{"status":"ok",...}` |
 | **API Docs** | http://localhost:8000/docs | Interactive Swagger UI |
 | **Supabase Studio** | http://localhost:54323 | Database management UI |
+
+⚠️ **Port Configuration**: Frontend must connect to backend on port **8000**. Verify in `.env` or `frontend/.env.local`:
+```bash
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+```
 
 ### 3.2 Test Authentication Flow
 
@@ -156,7 +162,7 @@ Test Files  3 passed (3)
 
 ### 4.3 Frontend E2E Tests (Playwright)
 
-✅ **Backend Fixed**: Login endpoint now working on port 8001  
+✅ **Backend Fixed**: Login endpoint now working on port 8000  
 ⚠️ **E2E Status**: 3/12 passing (environment configuration issue)
 
 ```bash
@@ -190,13 +196,13 @@ npx playwright test tests/e2e/login.spec.ts
 **Solution Applied**:
 1. ✅ Added comprehensive logging to auth endpoint
 2. ✅ Added global exception handler to FastAPI
-3. ✅ Moved backend to port 8001 (clean port)
-4. ✅ Updated all `.env` files to use port 8001
+3. ✅ Ensured backend runs on port 8000
+4. ✅ Updated all `.env` files to use port 8000
 
 **Verification**:
 ```bash
-# Backend works correctly on port 8001:
-curl -X POST http://localhost:8001/api/v1/auth/login \
+# Backend works correctly on port 8000:
+curl -X POST http://localhost:8000/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@example.com","password":"SecurePassword123!"}'
 
@@ -204,10 +210,10 @@ curl -X POST http://localhost:8001/api/v1/auth/login \
 ```
 
 **E2E Test Issue**:
-Tests still timeout because Playwright's webServer caches the old port 8000 configuration. Manual testing with browser works perfectly. This is an environment/caching issue, not a code bug.
+Tests still timeout because Playwright's webServer caches old configurations. Manual testing with browser works perfectly. This is an environment/caching issue, not a code bug.
 
 **Manual Testing** (Recommended):
-1. Start backend: `cd backend && python -m uvicorn coinvault.main:app --app-dir src --reload --port 8001`
+1. Start backend: `cd backend && python -m uvicorn coinvault.main:app --app-dir src --reload --port 8000`
 2. Start frontend: `cd frontend && npm run dev`
 3. Open http://localhost:3000/en/login
 4. Login with `admin@example.com` / `SecurePassword123!`
@@ -231,7 +237,7 @@ Tests still timeout because Playwright's webServer caches the old port 8000 conf
 | Problem | Solution |
 |---------|----------|
 | ModuleNotFoundError | `cd backend && pip install -e ".[dev]"` |
-| Port 8000 in use | Change port: `uvicorn ... --port 8001` or kill process |
+| Port 8000 in use | Kill process on port 8000 or restart computer to clear ghost processes |
 | "Internal Server Error" on login | **Restart backend server** to pick up .env changes |
 | Database connection fails | Verify: `supabase status` shows all services "running" |
 | Import errors | Ensure running from `backend/` directory, not `backend/src/` |
@@ -255,6 +261,7 @@ curl http://localhost:8000/api/v1/health
 | `npm not found` | Verify Node.js: `node --version`, reinstall if needed |
 | `Cannot find 'next'` | `cd frontend && rm -rf node_modules package-lock.json && npm install` |
 | Port 3000 in use | `npm run dev -- -p 3001` or kill process on port 3000 |
+| Health page shows "Backend unavailable" | Verify `NEXT_PUBLIC_API_BASE_URL=http://localhost:8000` in `.env` or `frontend/.env.local`, then **restart frontend** |
 | Can't connect to backend | Verify backend running: `curl http://localhost:8000/api/v1/health` |
 | CORS errors | Check `.env`: `CORS_ORIGINS=http://localhost:3000` |
 

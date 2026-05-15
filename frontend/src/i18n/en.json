@@ -1,6 +1,6 @@
 {
   "common": {
-    "phase": "Phase 1 foundation",
+    "phase": "Phase 2 authentication",
     "navigation": "Foundation navigation"
   },
   "public": {
@@ -16,15 +16,17 @@
     "healthLink": "Check foundation health"
   },
   "health": {
-    "title": "Foundation health",
+    "title": "System health",
     "description": "Review the local web, backend, database, authentication, and storage foundations.",
     "aggregate": "Overall status",
     "web": "Web",
     "backend": "Backend",
     "database": "Database",
+    "migrations": "Migrations",
     "auth": "Authentication",
+    "admin": "Admin account",
     "storage": "Storage",
-    "ok": "OK",
+    "ok": "Healthy",
     "degraded": "Degraded",
     "unavailable": "Unavailable"
   },

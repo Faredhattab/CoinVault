@@ -9,7 +9,9 @@ async function getHealth(): Promise<FoundationHealth> {
       web: { status: "ok", message: "Frontend shell reachable" },
       backend: { status: "unavailable", message: "Backend health endpoint unavailable" },
       database: { status: "unavailable", message: "Not checked" },
+      migrations: { status: "unavailable", message: "Not checked" },
       auth: { status: "unavailable", message: "Not checked" },
+      admin: { status: "unavailable", message: "Not checked" },
       storage: { status: "unavailable", message: "Not checked" }
     }
   };
