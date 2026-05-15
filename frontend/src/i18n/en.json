@@ -27,5 +27,19 @@
     "ok": "OK",
     "degraded": "Degraded",
     "unavailable": "Unavailable"
+  },
+  "auth": {
+    "loginTitle": "Admin Login",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "loginButton": "Login",
+    "loggingIn": "Logging in...",
+    "logoutButton": "Logout",
+    "invalidCredentials": "Invalid email or password",
+    "rateLimited": "Too many failed attempts. Please wait 15 minutes.",
+    "sessionLimitTitle": "Session Limit Reached",
+    "sessionLimitMessage": "You have reached the maximum of 3 concurrent sessions. Please revoke an existing session to continue.",
+    "revokeButton": "Revoke",
+    "cancelButton": "Cancel"
   }
 }

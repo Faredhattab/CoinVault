@@ -33,6 +33,7 @@ supabase/.temp/
 .claude/
 specs/
 docs/
+.gemini/
 
 
 # OS / editor

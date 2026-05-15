@@ -5,7 +5,7 @@ from coinvault.main import create_app
 
 def test_health_endpoint_matches_contract_shape() -> None:
     client = TestClient(create_app())
-    response = client.get("/health")
+    response = client.get("/api/v1/health")
     assert response.status_code == 200
     payload = response.json()
     assert payload["status"] in {"ok", "degraded", "unavailable"}

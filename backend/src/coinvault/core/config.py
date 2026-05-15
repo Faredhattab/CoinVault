@@ -8,10 +8,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # Load .env file from project root (3 levels up from this file)
-env_path = Path(__file__).parents[4] / ".env"
-load_dotenv(dotenv_path=env_path)
-
-SECRET_MARKERS = ("KEY", "SECRET", "TOKEN", "PASSWORD")
+load_dotenv(Path(__file__).resolve().parents[3] / ".env", override=True)
 
 
 @dataclass(frozen=True)
@@ -20,11 +17,19 @@ class Settings:
     api_host: str = "127.0.0.1"
     api_port: int = 8000
     cors_origins: str = "http://localhost:3000"
+
     supabase_url: str = "http://127.0.0.1:54321"
     supabase_anon_key: str = "replace-with-local-anon-key"
     supabase_service_role_key: str = "replace-with-local-service-role-key"
     supabase_db_url: str = "postgresql://postgres:postgres@127.0.0.1:54322/postgres"
     supabase_storage_url: str = "http://127.0.0.1:54321/storage/v1/s3"
+
+    session_timeout_days: int = 7
+    max_concurrent_sessions: int = 3
+    rate_limit_login_attempts: int = 5
+    rate_limit_window_minutes: int = 15
+    initial_admin_email: str = "admin@example.com"
+    initial_admin_password: str = "SecurePassword123!"
 
     @classmethod
     def from_env(cls) -> Settings:
@@ -39,7 +44,31 @@ class Settings:
                 "SUPABASE_SERVICE_ROLE_KEY", cls.supabase_service_role_key
             ),
             supabase_db_url=os.getenv("SUPABASE_DB_URL", cls.supabase_db_url),
-            supabase_storage_url=os.getenv("SUPABASE_STORAGE_URL", cls.supabase_storage_url),
+            supabase_storage_url=os.getenv(
+                "SUPABASE_STORAGE_URL", cls.supabase_storage_url
+            ),
+            session_timeout_days=int(
+                os.getenv("SESSION_TIMEOUT_DAYS", str(cls.session_timeout_days))
+            ),
+            max_concurrent_sessions=int(
+                os.getenv("MAX_CONCURRENT_SESSIONS", str(cls.max_concurrent_sessions))
+            ),
+            rate_limit_login_attempts=int(
+                os.getenv(
+                    "RATE_LIMIT_LOGIN_ATTEMPTS", str(cls.rate_limit_login_attempts)
+                )
+            ),
+            rate_limit_window_minutes=int(
+                os.getenv(
+                    "RATE_LIMIT_WINDOW_MINUTES", str(cls.rate_limit_window_minutes)
+                )
+            ),
+            initial_admin_email=os.getenv(
+                "INITIAL_ADMIN_EMAIL", cls.initial_admin_email
+            ),
+            initial_admin_password=os.getenv(
+                "INITIAL_ADMIN_PASSWORD", cls.initial_admin_password
+            ),
         )
 
     def missing_required_values(self) -> list[str]:
@@ -48,14 +77,16 @@ class Settings:
             "SUPABASE_ANON_KEY": self.supabase_anon_key,
             "SUPABASE_SERVICE_ROLE_KEY": self.supabase_service_role_key,
             "SUPABASE_DB_URL": self.supabase_db_url,
-            "SUPABASE_STORAGE_URL": self.supabase_storage_url,
         }
-        return [name for name, value in values.items() if not value or value.startswith("replace-")]
+        return [name for name, val in values.items() if "replace-with" in (val or "")]
+
+
+SECRET_MARKERS = ["KEY", "PASSWORD", "SECRET", "TOKEN", "URL"]
 
 
 def redact_setting(name: str, value: str | None) -> str:
     if value is None:
-        return ""
+        return "[not set]"
     if any(marker in name.upper() for marker in SECRET_MARKERS):
         return "[redacted]"
     return value

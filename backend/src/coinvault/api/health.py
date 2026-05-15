@@ -55,16 +55,22 @@ def _status_from_probe(result: tuple[bool, str]) -> ServiceHealth:
     )
 
 
-@router.get("/health", response_model=HealthResponse, operation_id="getFoundationHealth")
+@router.get(
+    "/health", response_model=HealthResponse, operation_id="getFoundationHealth"
+)
 def get_health(config: Annotated[Settings, Depends(get_settings)]) -> HealthResponse:
     missing = config.missing_required_values()
     config_message = (
-        f"Missing local configuration: {', '.join(missing)}" if missing else "Backend reachable"
+        f"Missing local configuration: {', '.join(missing)}"
+        if missing
+        else "Backend reachable"
     )
     backend_status = HealthStatus.degraded if missing else HealthStatus.ok
 
     services = {
-        "web": ServiceHealth(status=HealthStatus.ok, message="Frontend shell reachable"),
+        "web": ServiceHealth(
+            status=HealthStatus.ok, message="Frontend shell reachable"
+        ),
         "backend": ServiceHealth(status=backend_status, message=config_message),
         "database": _status_from_probe(database_reachable(config.supabase_db_url)),
         "auth": _status_from_probe(auth_reachable(config.supabase_url)),

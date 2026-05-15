@@ -27,5 +27,19 @@
     "ok": "سليم",
     "degraded": "متدهور",
     "unavailable": "غير متاح"
+  },
+  "auth": {
+    "loginTitle": "تسجيل دخول المسئول",
+    "emailLabel": "البريد الإلكتروني",
+    "passwordLabel": "كلمة المرور",
+    "loginButton": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "logoutButton": "تسجيل الخروج",
+    "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+    "rateLimited": "محاولات كثيرة فاشلة. يرجى الانتظار 15 دقيقة.",
+    "sessionLimitTitle": "تم الوصول إلى الحد الأقصى للجلسات",
+    "sessionLimitMessage": "لقد وصلت إلى الحد الأقصى (3) للجلسات المتزامنة. يرجى إلغاء إحدى الجلسات الحالية للمتابعة.",
+    "revokeButton": "إلغاء",
+    "cancelButton": "تراجع"
   }
 }

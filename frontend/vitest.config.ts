@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: "jsdom",
+    globals: true,
     // Exclude Playwright tests
     exclude: ["**/node_modules/**", "**/tests/**"],
     // Only run unit tests in src/
