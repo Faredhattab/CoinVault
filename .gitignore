@@ -23,6 +23,11 @@ pytest-cache-files-*/
 venv/
 *.egg-info/
 
+# Testing artifacts
+test-results/
+playwright-report/
+.last-run.json
+
 # Supabase local runtime
 supabase/.branches/
 supabase/.temp/

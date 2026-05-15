@@ -13,13 +13,14 @@ test.describe('Protected Routes', () => {
     await page.fill('#email', 'admin@example.com')
     await page.fill('#password', 'SecurePassword123!')
     await page.click('button[type="submit"]')
-    await page.waitForURL('**/en/admin')
-    
+    await page.waitForURL(/\/en\/admin/, { timeout: 15000 })
+
     // Navigate away and back
     await page.goto('/en')
     await page.goto('/en/admin')
-    
+
     // Should stay on admin page (not redirect)
+    await page.waitForURL(/\/en\/admin/, { timeout: 5000 })
     expect(page.url()).toContain('/en/admin')
   })
 
@@ -29,13 +30,13 @@ test.describe('Protected Routes', () => {
     await page.fill('#email', 'admin@example.com')
     await page.fill('#password', 'SecurePassword123!')
     await page.click('button[type="submit"]')
-    await page.waitForURL('**/en/admin')
-    
+    await page.waitForURL(/\/en\/admin/, { timeout: 15000 })
+
     // Refresh page
     await page.reload()
-    
+
     // Should still be on admin page
-    await page.waitForURL('**/en/admin')
+    await page.waitForURL(/\/en\/admin/, { timeout: 15000 })
     expect(page.url()).toContain('/en/admin')
   })
 })

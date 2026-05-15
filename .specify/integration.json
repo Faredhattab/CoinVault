@@ -3,7 +3,8 @@
   "integration_state_schema": 1,
   "installed_integrations": [
     "codex",
-    "claude"
+    "claude",
+    "gemini"
   ],
   "integration_settings": {
     "codex": {
@@ -13,8 +14,12 @@
     "claude": {
       "script": "ps",
       "invoke_separator": "-"
+    },
+    "gemini": {
+      "script": "ps",
+      "invoke_separator": "."
     }
   },
-  "integration": "claude",
-  "default_integration": "claude"
+  "integration": "gemini",
+  "default_integration": "gemini"
 }

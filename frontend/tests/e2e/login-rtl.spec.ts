@@ -19,8 +19,9 @@ test.describe('Login Flow - Arabic RTL', () => {
     await page.fill('#email', 'admin@example.com')
     await page.fill('#password', 'SecurePassword123!')
     await page.click('button[type="submit"]')
-    
-    await page.waitForURL('**/ar/admin')
+
+    // Wait for redirect to admin page
+    await page.waitForURL(/\/ar\/admin/, { timeout: 15000 })
     expect(page.url()).toContain('/ar/admin')
   })
 })
