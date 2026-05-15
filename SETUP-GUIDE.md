@@ -30,6 +30,7 @@ python -m uvicorn coinvault.main:app --app-dir src --reload
 # 5. Frontend Setup (New Terminal)
 cd frontend
 npm install
+npx playwright install chromium # Required for E2E tests
 npm run dev
 ```
 
@@ -54,7 +55,8 @@ pytest && mypy src && ruff check src
 ### Frontend
 ```bash
 cd frontend
-npm run check
+npm run check      # Typecheck + Lint + Unit tests
+npx playwright test # E2E tests (requires server running)
 ```
 
 ## 5. Troubleshooting
