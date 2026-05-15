@@ -10,7 +10,7 @@ def test_health_endpoint_matches_contract_shape() -> None:
     payload = response.json()
     assert payload["status"] in {"ok", "degraded", "unavailable"}
     assert "checked_at" in payload
-    assert set(payload["services"]) == {"web", "backend", "database", "auth", "storage"}
+    assert set(payload["services"]) == {"web", "backend", "database", "auth", "storage", "migrations", "admin"}
     for service in payload["services"].values():
         assert service["status"] in {"ok", "degraded", "unavailable"}
         assert service["message"]

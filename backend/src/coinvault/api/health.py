@@ -8,11 +8,11 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 
 from coinvault.core.config import Settings, settings
+from coinvault.services.admin_health import admin_account_seeded
 from coinvault.services.auth_health import auth_reachable
 from coinvault.services.database_health import database_reachable
-from coinvault.services.storage_health import storage_reachable
-from coinvault.services.admin_health import admin_account_seeded
 from coinvault.services.migration_health import migrations_applied
+from coinvault.services.storage_health import storage_reachable
 from coinvault.services.supabase_client import supabase_admin
 
 

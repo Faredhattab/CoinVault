@@ -40,8 +40,20 @@
     "invalidCredentials": "Invalid email or password",
     "rateLimited": "Too many failed attempts. Please wait 15 minutes.",
     "sessionLimitTitle": "Session Limit Reached",
-    "sessionLimitMessage": "You have reached the maximum of 3 concurrent sessions. Please revoke an existing session to continue.",
+    "sessionLimitMessage": "You have reached the maximum of 3 concurrent sessions. Revoke a session to continue, or wait for one to expire.",
+    "canLoginIn": "You can login again in",
+    "sessionExpiryHint": "The oldest session will expire automatically, allowing you to login without revoking.",
+    "expiresIn": "Expires in",
+    "mostRecent": "Most Recent",
+    "ipAddress": "IP Address",
+    "lastActive": "Last Active",
     "revokeButton": "Revoke",
-    "cancelButton": "Cancel"
+    "cancelButton": "Cancel",
+    "day": "day",
+    "days": "days",
+    "hour": "hour",
+    "hours": "hours",
+    "minute": "minute",
+    "minutes": "minutes"
   }
 }

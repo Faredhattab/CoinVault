@@ -1,7 +1,10 @@
 import re
-from typing import Optional, Dict, Any, cast
+from typing import Any, cast
+
 from supabase import Client
+
 from coinvault.services.supabase_client import supabase_admin
+
 
 def validate_password(password: str) -> bool:
     """
@@ -37,14 +40,14 @@ class AuthService:
             "password": password
         })
 
-    async def get_user_profile(self, user_id: str) -> Optional[Dict[str, Any]]:
+    async def get_user_profile(self, user_id: str) -> dict[str, Any] | None:
         """
         Fetch user profile from public.profiles
         """
         response = self.client.table("profiles").select("*").eq("id", user_id).single().execute()
-        return cast(Optional[Dict[str, Any]], response.data) if response.data else None
+        return cast(dict[str, Any] | None, response.data) if response.data else None
 
-    async def link_provider(self, user_id: str, provider: str) -> Optional[Dict[str, Any]]:
+    async def link_provider(self, user_id: str, provider: str) -> dict[str, Any] | None:
         """
         Update linked_providers in profile
         """
@@ -59,4 +62,4 @@ class AuthService:
             "linked_providers": list(providers)
         }).eq("id", user_id).execute()
         
-        return cast(Optional[Dict[str, Any]], response.data[0]) if response.data else None
+        return cast(dict[str, Any] | None, response.data[0]) if response.data else None

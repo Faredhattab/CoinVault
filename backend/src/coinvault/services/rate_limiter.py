@@ -1,5 +1,4 @@
 from datetime import UTC, datetime, timedelta
-from typing import Any, cast
 
 from postgrest.types import CountMethod
 from supabase import Client
@@ -41,19 +40,15 @@ class RateLimiter:
     ) -> None:
         """
         Log a failed login attempt to the audit log.
+        Note: user_id is set to null for non-existent users (email already in event_data).
         """
-        # Fetch user_id if email exists in profiles
-        user_response = (
-            self.client.table("profiles").select("id").eq("email", email).execute()
-        )
-        data = cast(list[dict[str, Any]], user_response.data)
-        user_id = data[0]["id"] if data else None
-
         event_data = {"reason": reason, "email": email}
 
+        # Don't fetch user_id - it adds latency and email is already in event_data
+        # For failed logins, user_id can remain null (especially for non-existent users)
         self.client.table("auth_audit_log").insert(
             {
-                "user_id": user_id,
+                "user_id": None,  # Set null - email is logged in event_data
                 "event_type": "login_failure",
                 "event_data": event_data,
                 "ip_address": ip_address,

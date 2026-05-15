@@ -46,17 +46,12 @@ export function LoginForm() {
       router.push(`/${locale}/admin`)
     } catch (e: any) {
       // Check for structured error from backend
-      if (e.message.includes('session_limit_exceeded')) {
-        try {
-          const errorData = JSON.parse(e.message)
-          setLimitExceeded({
-            sessions: errorData.active_sessions,
-            message: errorData.message
-          })
-          return
-        } catch (parseError) {
-          // If not parsable, just show the message
-        }
+      if (e.data && e.data.error === 'session_limit_exceeded') {
+        setLimitExceeded({
+          sessions: e.data.active_sessions,
+          message: e.data.message
+        })
+        return
       }
       setError(e.message || 'Login failed')
     } finally {
@@ -64,23 +59,11 @@ export function LoginForm() {
     }
   }
 
-  const handleRevoke = async (sessionId: string) => {
-    try {
-      await revokeSession(sessionId)
-      setLimitExceeded(null)
-      // We can't easily re-submit the form with values here automatically 
-      // without storing them, but we can at least tell the user to try again
-      setError(null)
-    } catch (e: any) {
-      setError(e.message || 'Failed to revoke session')
-    }
-  }
-
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full max-w-md p-6 bg-white rounded shadow-md">
         <h2 className="text-2xl font-bold text-center">{t('loginTitle')}</h2>
-        
+
         {error && (
           <div className="p-3 bg-red-100 text-red-700 rounded text-sm">
             {error}
@@ -121,7 +104,6 @@ export function LoginForm() {
       {limitExceeded && (
         <SessionLimitModal
           sessions={limitExceeded.sessions}
-          onRevoke={handleRevoke}
           onClose={() => setLimitExceeded(null)}
         />
       )}

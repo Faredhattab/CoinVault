@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from supabase import Client
+
 from coinvault.core.config import Settings
 
 

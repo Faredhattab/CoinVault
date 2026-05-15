@@ -18,18 +18,37 @@ export const authService = {
 
     if (!response.ok) {
       const errorData = await response.json()
+      // If the error detail is an object, it might be a structured error (like session_limit_exceeded)
+      if (typeof errorData.detail === 'object' && errorData.detail !== null) {
+        const error = new Error(errorData.detail.message || 'Login failed') as any
+        error.data = errorData.detail
+        throw error
+      }
       throw new Error(errorData.detail || 'Login failed')
     }
 
     const authData: AuthResponse = await response.json()
 
     // Set session in Supabase client for subsequent calls
-    const { error } = await supabase.auth.setSession({
-      access_token: authData.access_token,
-      refresh_token: authData.refresh_token,
-    })
+    try {
+      // Add a longer timeout to prevent blocking the user if Supabase is slow
+      const setSessionPromise = supabase.auth.setSession({
+        access_token: authData.access_token,
+        refresh_token: authData.refresh_token,
+      })
 
-    if (error) throw error
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Session setup timeout')), 10000)
+      )
+
+      // We use race to prevent hanging, but we catch the error to make it non-fatal
+      await Promise.race([setSessionPromise, timeoutPromise])
+        .catch(err => {
+          console.warn('Supabase setSession delayed or failed, proceeding anyway:', err)
+        })
+    } catch (err) {
+      console.error('Unexpected error during Supabase session setup:', err)
+    }
 
     return authData
   },
@@ -87,8 +106,12 @@ export const authService = {
 
       return await response.json()
     } catch (err) {
-      console.error('Failed to fetch user profile from backend:', err)
-      
+      // Only log error if we expect the backend to be available
+      // (i.e., we have a session but backend is unreachable)
+      if (session) {
+        console.error('Failed to fetch user profile from backend:', err)
+      }
+
       // Fallback to Supabase user if backend is down but session is valid
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return null

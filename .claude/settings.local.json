@@ -60,7 +60,12 @@
       "Bash(pkill -f \"uvicorn coinvault\")",
       "Bash(taskkill //F //IM python.exe)",
       "Bash(tasklist)",
-      "Bash(taskkill //F //IM node.exe)"
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(cat .env.local)",
+      "Bash(cat .env)",
+      "Bash(supabase migration *)",
+      "Bash(pytest *)",
+      "Bash(grep -E '\\\\.\\(ts|tsx\\)$')"
     ]
   }
 }

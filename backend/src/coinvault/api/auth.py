@@ -49,7 +49,8 @@ async def login(request: Request, login_data: UserLogin) -> dict[str, Any]:
         auth_response = await auth_service.authenticate_user(
             login_data.email, login_data.password
         )
-        logger.info(f"Auth successful, user ID: {auth_response.user.id if auth_response and auth_response.user else 'None'}")
+        user_id = auth_response.user.id if auth_response and auth_response.user else "None"
+        logger.info(f"Auth successful, user ID: {user_id}")
     except Exception as e:
         logger.error(f"Authentication failed: {type(e).__name__}: {str(e)}", exc_info=True)
         rate_limiter.log_failed_attempt(
@@ -83,7 +84,7 @@ async def login(request: Request, login_data: UserLogin) -> dict[str, Any]:
                 "message": e.message,
                 "active_sessions": e.sessions,
             },
-        )
+        ) from e
     except Exception as e:
         logger.error(f"Session creation failed: {type(e).__name__}: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Session creation failed: {str(e)}") from e

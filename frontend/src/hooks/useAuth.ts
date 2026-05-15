@@ -34,7 +34,11 @@ export function useAuth() {
   }, [])
 
   const login = async (email: string, password: string) => {
-    return await authService.login({ email, password })
+    const result = await authService.login({ email, password })
+    // Update local state immediately after successful login
+    setUser(result.user)
+    setSession(result.session || null)
+    return result
   }
 
   const logout = async () => {

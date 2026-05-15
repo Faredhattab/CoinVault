@@ -1,8 +1,8 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { expect, test, vi, describe } from 'vitest'
+import { expect, test, vi, describe, beforeEach } from 'vitest'
 import { LoginForm } from './LoginForm'
 import { useAuth } from '@/hooks/useAuth'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 
 // Mocks
@@ -12,6 +12,7 @@ vi.mock('@/hooks/useAuth', () => ({
 
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
+  useParams: vi.fn(),
 }))
 
 vi.mock('next-intl', () => ({
@@ -27,6 +28,7 @@ describe('LoginForm', () => {
     vi.clearAllMocks()
     ;(useAuth as any).mockReturnValue({ login: mockLogin })
     ;(useRouter as any).mockReturnValue({ push: mockPush })
+    ;(useParams as any).mockReturnValue({ locale: 'en' })
     ;(useTranslations as any).mockReturnValue(mockT)
   })
 
@@ -61,7 +63,7 @@ describe('LoginForm', () => {
 
     await waitFor(() => {
       expect(mockLogin).toHaveBeenCalledWith('admin@example.com', 'SecurePassword123!')
-      expect(mockPush).toHaveBeenCalledWith('/admin')
+      expect(mockPush).toHaveBeenCalledWith('/en/admin')
     })
   })
 
