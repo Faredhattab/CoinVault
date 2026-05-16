@@ -72,7 +72,8 @@
       "Bash(bash test-sessions.sh)",
       "Bash(xargs grep -l \"TODO\\\\|FIXME\\\\|XXX\\\\|HACK\")",
       "Bash(cat)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(npm install *)"
     ]
   }
 }

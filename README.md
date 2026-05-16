@@ -70,7 +70,7 @@ npm run dev
 ## 📖 Documentation
 
 **⭐ Start Here:**
-- **[SETUP-GUIDE.md](SETUP-GUIDE.md)**: Complete setup, testing & troubleshooting guide
+- **[quickstart.md](quickstart.md)**: Complete setup, testing & troubleshooting guide
 
 **🏗️ Architecture:**
 - **[PLAN.md](PLAN.md)**: Full technical specification & roadmap
