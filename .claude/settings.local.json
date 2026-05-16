@@ -65,7 +65,14 @@
       "Bash(cat .env)",
       "Bash(supabase migration *)",
       "Bash(pytest *)",
-      "Bash(grep -E '\\\\.\\(ts|tsx\\)$')"
+      "Bash(grep -E '\\\\.\\(ts|tsx\\)$')",
+      "Bash(powershell *)",
+      "Bash(xargs grep -l \"sessions\")",
+      "Bash(chmod +x test-sessions.sh)",
+      "Bash(bash test-sessions.sh)",
+      "Bash(xargs grep -l \"TODO\\\\|FIXME\\\\|XXX\\\\|HACK\")",
+      "Bash(cat)",
+      "Read(//tmp/**)"
     ]
   }
 }

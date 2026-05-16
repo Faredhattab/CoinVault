@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase'
 import { LoginRequest, AuthResponse, UserProfile } from '../../../shared/types/auth'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'
+const USER_CACHE_KEY = 'coinvault_user_cache'
 
 export const authService = {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
@@ -29,31 +30,28 @@ export const authService = {
 
     const authData: AuthResponse = await response.json()
 
-    // Set session in Supabase client for subsequent calls
-    try {
-      // Add a longer timeout to prevent blocking the user if Supabase is slow
-      const setSessionPromise = supabase.auth.setSession({
-        access_token: authData.access_token,
-        refresh_token: authData.refresh_token,
-      })
+    // Cache user data for quick access after redirect
+    if (authData.user) {
+      sessionStorage.setItem(USER_CACHE_KEY, JSON.stringify(authData.user))
+    }
 
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Session setup timeout')), 10000)
-      )
+    // Set session in Supabase client - wait for it to complete
+    const { error } = await supabase.auth.setSession({
+      access_token: authData.access_token,
+      refresh_token: authData.refresh_token,
+    })
 
-      // We use race to prevent hanging, but we catch the error to make it non-fatal
-      await Promise.race([setSessionPromise, timeoutPromise])
-        .catch(err => {
-          console.warn('Supabase setSession delayed or failed, proceeding anyway:', err)
-        })
-    } catch (err) {
-      console.error('Unexpected error during Supabase session setup:', err)
+    if (error) {
+      console.error('Supabase setSession error:', error)
     }
 
     return authData
   },
 
   async logout() {
+    // Clear cached user
+    sessionStorage.removeItem(USER_CACHE_KEY)
+
     try {
       // Call backend logout
       const { data: { session } } = await supabase.auth.getSession()
@@ -74,6 +72,25 @@ export const authService = {
     }
   },
 
+  async getSessions() {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) throw new Error('Not authenticated')
+
+    const response = await fetch(`${API_BASE_URL}/api/v1/auth/sessions`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${session.access_token}`,
+      },
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.detail || 'Failed to fetch sessions')
+    }
+
+    return await response.json()
+  },
+
   async revokeSession(sessionId: string) {
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) throw new Error('Not authenticated')
@@ -92,31 +109,46 @@ export const authService = {
   },
 
   async getCurrentUser(): Promise<UserProfile | null> {
+    // First check cache for instant load after login
+    const cached = sessionStorage.getItem(USER_CACHE_KEY)
+    if (cached) {
+      try {
+        return JSON.parse(cached)
+      } catch {
+        sessionStorage.removeItem(USER_CACHE_KEY)
+      }
+    }
+
+    // Check if we have a session
     const { data: { session }, error: sessionError } = await supabase.auth.getSession()
     if (sessionError || !session) return null
 
+    // Fetch from backend with timeout
     try {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 3000)
+
       const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
         },
+        signal: controller.signal,
       })
+
+      clearTimeout(timeoutId)
 
       if (!response.ok) return null
 
-      return await response.json()
+      const user = await response.json()
+      // Cache the result
+      sessionStorage.setItem(USER_CACHE_KEY, JSON.stringify(user))
+      return user
     } catch (err) {
-      // Only log error if we expect the backend to be available
-      // (i.e., we have a session but backend is unreachable)
-      if (session) {
-        console.error('Failed to fetch user profile from backend:', err)
-      }
-
-      // Fallback to Supabase user if backend is down but session is valid
+      // Fallback to Supabase user
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return null
 
-      return {
+      const profile: UserProfile = {
         id: user.id,
         email: user.email!,
         role: (user.app_metadata?.role as any) || 'user',
@@ -124,6 +156,10 @@ export const authService = {
         created_at: user.created_at,
         updated_at: user.updated_at || user.created_at,
       }
+
+      // Cache the fallback
+      sessionStorage.setItem(USER_CACHE_KEY, JSON.stringify(profile))
+      return profile
     }
   }
 }

@@ -1,8 +1,10 @@
+from datetime import UTC, datetime, timedelta
 from typing import Annotated, Any
 
 from fastapi import Depends, HTTPException, Request
 
-from coinvault.services.supabase_client import get_user_client, supabase_anon
+from coinvault.core.config import settings
+from coinvault.services.supabase_client import get_user_client, supabase_admin, supabase_anon
 
 
 async def get_token(request: Request) -> str:
@@ -17,14 +19,74 @@ async def get_token(request: Request) -> str:
     return auth_header.split(" ")[1]
 
 
-async def get_current_user(token: Annotated[str, Depends(get_token)]) -> Any:
+async def get_current_user(
+    token: Annotated[str, Depends(get_token)], request: Request
+) -> Any:
     """
     Dependency to get current authenticated user from Supabase.
+    Also updates session activity (sliding window timeout).
     """
     # Use anon client for validation (user's token validates itself)
     response = supabase_anon.auth.get_user(token)
     if not response or not response.user:
         raise HTTPException(status_code=401, detail="Invalid session")
+
+    # Find the user's active session for this device
+    # Simple implementation: find by user_id and IP/user_agent
+    user_id = str(response.user.id)
+    ip_address = request.client.host if request.client else None
+    user_agent = request.headers.get("user-agent")
+
+    try:
+        # Query for active session matching this device
+        now = datetime.now(UTC)
+        session_response = (
+            supabase_admin.table("sessions")
+            .select("id")
+            .eq("user_id", user_id)
+            .eq("is_active", True)
+            .eq("ip_address", ip_address)
+            .eq("user_agent", user_agent)
+            .gt("expires_at", now.isoformat())
+            .limit(1)
+            .execute()
+        )
+
+        if session_response.data and len(session_response.data) > 0:
+            session_id = str(session_response.data[0]["id"])
+
+            # Store session_id in request state for later use
+            request.state.session_id = session_id
+
+            # Update session activity (with 5-minute cooldown to reduce writes)
+            # Check last_activity before updating
+            session_detail = (
+                supabase_admin.table("sessions")
+                .select("last_activity")
+                .eq("id", session_id)
+                .single()
+                .execute()
+            )
+
+            should_update = True
+            if session_detail.data and session_detail.data.get("last_activity"):
+                last_activity = datetime.fromisoformat(
+                    session_detail.data["last_activity"].replace("Z", "+00:00")
+                )
+                # Only update if more than 5 minutes since last update
+                should_update = (now - last_activity).total_seconds() > 300
+
+            if should_update:
+                new_expires_at = now + timedelta(days=settings.session_timeout_days)
+                supabase_admin.table("sessions").update(
+                    {
+                        "last_activity": now.isoformat(),
+                        "expires_at": new_expires_at.isoformat(),
+                    }
+                ).eq("id", session_id).execute()
+    except Exception:
+        # Don't fail the request if session tracking fails
+        pass
 
     return response.user
 

@@ -131,13 +131,40 @@ async def get_me(user: Annotated[Any, Depends(get_current_user)]) -> Any:
     return profile
 
 
+@router.get("/sessions")
+async def get_sessions(
+    request: Request, user: Annotated[Any, Depends(get_current_user)]
+) -> dict[str, Any]:
+    """Get all sessions for the current user"""
+    sessions = session_service.get_user_sessions(str(user.id))
+
+    # Mark current session based on request
+    current_session_id = getattr(request.state, "session_id", None)
+
+    # Filter to only active sessions and add is_current flag
+    active_sessions = []
+    for session in sessions:
+        if session.get("is_active"):
+            session_data = {
+                "id": str(session["id"]),
+                "device_info": session.get("device_info", {}),
+                "ip_address": session.get("ip_address"),
+                "last_activity": session.get("last_activity"),
+                "expires_at": session.get("expires_at"),
+                "is_current": str(session["id"]) == current_session_id,
+            }
+            active_sessions.append(session_data)
+
+    return {"sessions": active_sessions}
+
+
 @router.delete("/sessions/{session_id}")
 async def revoke_session(
     session_id: str, user: Annotated[Any, Depends(get_current_user)]
 ) -> dict[str, str]:
     # Verify the session belongs to the user
-    sessions = session_service.get_user_sessions(user.id)
-    if not any(s["id"] == session_id for s in sessions):
+    sessions = session_service.get_user_sessions(str(user.id))
+    if not any(str(s["id"]) == session_id for s in sessions):
         raise HTTPException(status_code=404, detail="Session not found")
 
     session_service.revoke_session(session_id)

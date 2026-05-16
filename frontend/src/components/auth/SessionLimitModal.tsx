@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
+import { ShieldAlert, Clock, Globe, Info, X } from 'lucide-react'
 
 interface ActiveSession {
   id: string
@@ -36,7 +37,6 @@ export function SessionLimitModal({ sessions, onClose }: SessionLimitModalProps)
 
     if (!soonestExpiry) return null
 
-    // TypeScript doesn't narrow the type after the null check above
     const msUntilExpiry = (soonestExpiry as Date).getTime() - now.getTime()
     const daysUntilExpiry = Math.floor(msUntilExpiry / (1000 * 60 * 60 * 24))
     const hoursUntilExpiry = Math.floor((msUntilExpiry % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
@@ -81,68 +81,93 @@ export function SessionLimitModal({ sessions, onClose }: SessionLimitModalProps)
   const timeUntilCanLogin = getTimeUntilExpiry()
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-2">
-          {t('sessionLimitTitle') || 'Session Limit Reached'}
-        </h2>
-
-        <p className="text-gray-600 mb-4">
-          {t('sessionLimitMessage') || 'You have reached the maximum of 3 concurrent sessions. Revoke a session to continue, or wait for one to expire.'}
-        </p>
-
-        {timeUntilCanLogin && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-            <p className="text-sm text-blue-800">
-              <strong>⏱️ {t('canLoginIn') || 'You can login again in'}:</strong> {timeUntilCanLogin}
-            </p>
-            <p className="text-xs text-blue-600 mt-1">
-              {t('sessionExpiryHint') || 'The oldest session will expire automatically, allowing you to login without revoking.'}
-            </p>
+    <div className="fixed inset-0 bg-[#20221f]/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-[#d8dccf] animate-in zoom-in-95 duration-200">
+        <div className="bg-[#ffd9d6] p-6 flex items-start justify-between border-b border-[#7b1d17]/10">
+          <div className="flex items-center gap-4">
+            <div className="bg-[#7b1d17] text-white p-2 rounded-xl">
+              <ShieldAlert className="w-6 h-6" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-[#7b1d17]">
+                {t('sessionLimitTitle') || 'Session Limit Reached'}
+              </h2>
+              <p className="text-[#7b1d17]/80 text-sm font-medium mt-1">
+                {t('sessionLimitMessage') || 'Maximum of 3 concurrent sessions reached.'}
+              </p>
+            </div>
           </div>
-        )}
+          <button 
+            onClick={onClose}
+            className="p-1 rounded-lg hover:bg-black/5 transition-colors"
+          >
+            <X className="w-5 h-5 text-[#7b1d17]" />
+          </button>
+        </div>
 
-        <ul className="space-y-3 mb-6 max-h-96 overflow-y-auto">
-          {sessions.map((session, index) => (
-            <li
-              key={session.id}
-              className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
-            >
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="font-medium text-gray-900">
-                      {session.device}
-                    </span>
-                    {index === 0 && (
-                      <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded">
-                        {t('mostRecent') || 'Most Recent'}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    📍 {t('ipAddress') || 'IP Address'}: {session.ip_address}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    🕐 {t('lastActive') || 'Last Active'}: {new Date(session.last_activity).toLocaleString()}
-                  </p>
-                  {session.expires_at && (
-                    <p className="text-sm text-gray-600">
-                      ⏳ {t('expiresIn') || 'Expires in'}: <strong>{formatExpiry(session.expires_at)}</strong>
-                    </p>
-                  )}
-                </div>
+        <div className="p-6">
+          {timeUntilCanLogin && (
+            <div className="bg-[#f7f7f2] border border-[#d8dccf] rounded-xl p-4 mb-6 flex items-start gap-4">
+              <div className="bg-[#20221f] text-white p-1.5 rounded flex-shrink-0">
+                <Clock className="w-4 h-4" />
               </div>
-            </li>
-          ))}
-        </ul>
+              <div>
+                <p className="text-sm text-[#20221f]">
+                  <strong>{t('canLoginIn') || 'You can login again in'}:</strong> <span className="font-bold">{timeUntilCanLogin}</span>
+                </p>
+                <p className="text-xs text-[#5d6558] mt-1 italic">
+                  {t('sessionExpiryHint') || 'The oldest session will expire automatically.'}
+                </p>
+              </div>
+            </div>
+          )}
 
-        <div className="flex justify-end">
+          <div className="eyebrow mb-3 px-1">{t('activeSessionsHeader') || 'Current Access Points'}</div>
+          <ul className="space-y-3 mb-8 max-h-[30vh] overflow-y-auto pr-2 custom-scrollbar">
+            {sessions.map((session, index) => (
+              <li
+                key={session.id}
+                className="bg-white border border-[#d8dccf] rounded-xl p-4 hover:border-[#20221f] transition-all group"
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="font-bold text-[#20221f]">
+                        {session.device}
+                      </span>
+                      {index === 0 && (
+                        <span className="text-[0.65rem] font-bold uppercase tracking-wider bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                          {t('mostRecent') || 'Most Recent'}
+                        </span>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-[#5d6558]">
+                      <div className="flex items-center gap-1.5">
+                        <Globe className="w-3 h-3" />
+                        <span>{session.ip_address}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="w-3 h-3" />
+                        <span>{new Date(session.last_activity).toLocaleDateString()}</span>
+                      </div>
+                      {session.expires_at && (
+                        <div className="flex items-center gap-1.5 col-span-full mt-1 text-[#20221f] font-medium">
+                          <Info className="w-3 h-3" />
+                          <span>{t('expiresIn') || 'Expires in'}: {formatExpiry(session.expires_at)}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors"
+            className="button secondary w-full py-3 rounded-xl font-bold tracking-tight"
           >
-            {t('cancelButton') || 'Cancel'}
+            {t('cancelButton') || 'Close'}
           </button>
         </div>
       </div>

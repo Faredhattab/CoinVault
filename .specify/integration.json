@@ -20,6 +20,6 @@
       "invoke_separator": "."
     }
   },
-  "integration": "gemini",
-  "default_integration": "gemini"
+  "integration": "claude",
+  "default_integration": "claude"
 }

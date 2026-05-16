@@ -1,5 +1,6 @@
 import { ServiceStatusList, type FoundationHealth } from "@/components/ServiceStatusList";
 import { getMessages, normalizeLocale } from "@/i18n";
+import { Activity } from "lucide-react";
 
 async function getHealth(): Promise<FoundationHealth> {
   const fallback: FoundationHealth = {
@@ -40,12 +41,18 @@ export default async function HealthPage({
 
   return (
     <main className="shell">
-      <section className="panel" aria-labelledby="health-title">
-        <p className="eyebrow">{messages.common.phase}</p>
-        <h1 id="health-title">{messages.health.title}</h1>
-        <p>{messages.health.description}</p>
+      <div className="panel max-w-3xl">
+        <header className="mb-6">
+          <p className="eyebrow">{messages.common.phase}</p>
+          <div className="flex items-center gap-3 mt-2 mb-4">
+            <h1 className="text-3xl font-bold text-[#20221f]">{messages.health.title}</h1>
+            <Activity className="w-8 h-8 text-[#20221f]" />
+          </div>
+          <p className="text-[#3e443b] max-w-prose">{messages.health.description}</p>
+        </header>
+
         <ServiceStatusList health={health} labels={messages.health} />
-      </section>
+      </div>
     </main>
   );
 }

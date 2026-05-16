@@ -30,6 +30,7 @@ async def test_get_current_user_invalid_token() -> None:
         "coinvault.middleware.auth_middleware.supabase_anon.auth.get_user"
     ) as mock_get_user:
         mock_get_user.return_value = MagicMock(user=None)
+        mock_request = MagicMock()
         with pytest.raises(HTTPException) as exc:
-            await get_current_user("invalid-token")
+            await get_current_user("invalid-token", mock_request)
         assert exc.value.status_code == 401
