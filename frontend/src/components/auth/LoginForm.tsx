@@ -103,45 +103,45 @@ export function LoginForm() {
         <div className="space-y-2">
           <label 
             htmlFor="email" 
-            className="block text-sm font-bold text-[#20221f] uppercase tracking-wider ml-1"
+            className="block text-sm font-bold text-[#20221f] uppercase tracking-wider ms-1"
           >
             {t('emailLabel')}
           </label>
           <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#5d6558] group-focus-within:text-[#20221f] transition-colors">
+            <div className="absolute inset-y-0 start-0 ps-3 flex items-center pointer-events-none text-[#5d6558] group-focus-within:text-[#20221f] transition-colors">
               <Mail className="w-5 h-5" />
             </div>
             <input
               {...register('email')}
               id="email"
               type="email"
-              className="block w-full pl-10 pr-4 py-3 bg-[#f7f7f2] border border-[#d8dccf] rounded-md text-[#20221f] focus:ring-2 focus:ring-[#20221f] focus:border-transparent transition-all outline-none"
+              className="block w-full ps-10 pe-4 py-3 bg-[#f7f7f2] border border-[#d8dccf] rounded-md text-[#20221f] focus:ring-2 focus:ring-[#20221f] focus:border-transparent transition-all outline-none"
               placeholder="admin@example.com"
             />
           </div>
-          {errors.email && <p className="text-[#7b1d17] text-xs font-bold mt-1 ml-1">{errors.email.message}</p>}
+          {errors.email && <p className="text-[#7b1d17] text-xs font-bold mt-1 ms-1">{errors.email.message}</p>}
         </div>
 
         <div className="space-y-2">
           <label 
             htmlFor="password" 
-            className="block text-sm font-bold text-[#20221f] uppercase tracking-wider ml-1"
+            className="block text-sm font-bold text-[#20221f] uppercase tracking-wider ms-1"
           >
             {t('passwordLabel')}
           </label>
           <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#5d6558] group-focus-within:text-[#20221f] transition-colors">
+            <div className="absolute inset-y-0 start-0 ps-3 flex items-center pointer-events-none text-[#5d6558] group-focus-within:text-[#20221f] transition-colors">
               <Lock className="w-5 h-5" />
             </div>
             <input
               {...register('password')}
               id="password"
               type="password"
-              className="block w-full pl-10 pr-4 py-3 bg-[#f7f7f2] border border-[#d8dccf] rounded-md text-[#20221f] focus:ring-2 focus:ring-[#20221f] focus:border-transparent transition-all outline-none"
+              className="block w-full ps-10 pe-4 py-3 bg-[#f7f7f2] border border-[#d8dccf] rounded-md text-[#20221f] focus:ring-2 focus:ring-[#20221f] focus:border-transparent transition-all outline-none"
               placeholder="••••••••••••"
             />
           </div>
-          {errors.password && <p className="text-[#7b1d17] text-xs font-bold mt-1 ml-1">{errors.password.message}</p>}
+          {errors.password && <p className="text-[#7b1d17] text-xs font-bold mt-1 ms-1">{errors.password.message}</p>}
         </div>
 
         <button

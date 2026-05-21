@@ -17,29 +17,21 @@
   the iteration process.
 -->
 
-**Language/Version**: [e.g., TypeScript 5.x frontend, Python 3.12 backend or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., Next.js, React, FastAPI, Pydantic or NEEDS CLARIFICATION]  
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
 **Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [unit, integration, and UI test stack covering every production function or NEEDS CLARIFICATION]  
-**Target Platform**: [e.g., cloud-hosted Next.js app, Linux service, iOS 15+ or NEEDS CLARIFICATION]
-**Project Type**: [e.g., Next.js frontend, FastAPI backend, full-stack web app, library or NEEDS CLARIFICATION]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]  
 **Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [mobile-first responsive UX, English default locale, Arabic RTL support, cloud-native operation, <200ms p95, or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
 **Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-- **Clean Code**: Feature uses small cohesive modules, descriptive names, explicit contracts, and removes avoidable duplication.
-- **Function Tests**: Every production function has planned automated coverage for normal behavior, errors, and edge cases.
-- **Minimal Modern UX**: User-facing screens are focused, accessible, visually restrained, and aligned to the design system.
-- **Mobile-First Responsive**: Mobile viewport behavior is defined first, then tablet and desktop adaptations are specified.
-- **Multilingual and RTL**: English is the default locale, Arabic is fully supported, and RTL behavior is designed and tested.
-- **Next.js Frontend Standard**: Frontend work uses Next.js, or the Complexity Tracking table records an approved exception.
-- **FastAPI Backend Standard**: Backend work uses FastAPI with typed contracts, dependency injection, and OpenAPI metadata, or the Complexity Tracking table records an approved exception.
-- **Cloud-Native Operation**: Runtime configuration, logging, health checks, secrets handling, and deployment assumptions are defined.
-- **Living Documentation**: Spec, plan, quickstart, contracts, and operational notes will be updated; non-SpecKit docs consolidated into README/quickstart; temporary docs marked [TMP].
+[Gates determined based on constitution file]
 
 ## Project Structure
 
@@ -47,12 +39,12 @@
 
 ```text
 specs/[###-feature]/
-|-- plan.md              # This file (/speckit-plan command output)
-|-- research.md          # Phase 0 output (/speckit-plan command)
-|-- data-model.md        # Phase 1 output (/speckit-plan command)
-|-- quickstart.md        # Phase 1 output (/speckit-plan command)
-|-- contracts/           # Phase 1 output (/speckit-plan command)
-`-- tasks.md             # Phase 2 output (/speckit-tasks command - NOT created by /speckit-plan)
+├── plan.md              # This file (/speckit-plan command output)
+├── research.md          # Phase 0 output (/speckit-plan command)
+├── data-model.md        # Phase 1 output (/speckit-plan command)
+├── quickstart.md        # Phase 1 output (/speckit-plan command)
+├── contracts/           # Phase 1 output (/speckit-plan command)
+└── tasks.md             # Phase 2 output (/speckit-tasks command - NOT created by /speckit-plan)
 ```
 
 ### Source Code (repository root)
@@ -64,41 +56,39 @@ specs/[###-feature]/
 -->
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project
+# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
 src/
-|-- models/
-|-- services/
-|-- cli/
-`-- lib/
+├── models/
+├── services/
+├── cli/
+└── lib/
 
 tests/
-|-- contract/
-|-- integration/
-`-- unit/
+├── contract/
+├── integration/
+└── unit/
 
-# [REMOVE IF UNUSED] Option 2: Next.js web application (default for frontend work)
+# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
 backend/
-|-- src/
-|   |-- models/
-|   |-- services/
-|   `-- api/
-`-- tests/
+├── src/
+│   ├── models/
+│   ├── services/
+│   └── api/
+└── tests/
 
 frontend/
-|-- app/ or pages/
-|-- src/
-|   |-- components/
-|   |-- lib/
-|   `-- services/
-|-- tests/
-`-- next.config.*
+├── src/
+│   ├── components/
+│   ├── pages/
+│   └── services/
+└── tests/
 
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when iOS/Android detected)
+# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
 api/
-`-- [same as backend above]
+└── [same as backend above]
 
 ios/ or android/
-`-- [platform-specific structure: feature modules, UI flows, platform tests]
+└── [platform-specific structure: feature modules, UI flows, platform tests]
 ```
 
 **Structure Decision**: [Document the selected structure and reference the real
@@ -110,7 +100,5 @@ directories captured above]
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
-| [e.g., non-Next.js frontend] | [current need] | [why Next.js is insufficient] |
-| [e.g., non-FastAPI backend] | [current need] | [why FastAPI is insufficient] |
-| [e.g., untested generated function] | [specific reason] | [why direct testing cannot cover it] |
-| [e.g., temporary English-only release] | [specific reason] | [why Arabic RTL cannot be supported now] |
+| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |

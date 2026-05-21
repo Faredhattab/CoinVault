@@ -170,12 +170,12 @@ export default function SessionList({ onSessionRevoked }: SessionListProps) {
               <div className="grid sm:flex sm:gap-4 text-sm text-[#5d6558]">
                 {session.ip_address && (
                   <div className="flex items-center gap-1">
-                    <Globe className="w-3.5 h-3.5" />
+                    <Globe className="w-4 h-4" />
                     <span>{session.ip_address}</span>
                   </div>
                 )}
                 <div className="flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5" />
+                  <Clock className="w-4 h-4" />
                   <span>{formatDate(session.last_activity)}</span>
                 </div>
               </div>

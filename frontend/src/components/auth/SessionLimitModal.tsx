@@ -123,7 +123,7 @@ export function SessionLimitModal({ sessions, onClose }: SessionLimitModalProps)
           )}
 
           <div className="eyebrow mb-3 px-1">{t('activeSessionsHeader') || 'Current Access Points'}</div>
-          <ul className="space-y-3 mb-8 max-h-[30vh] overflow-y-auto pr-2 custom-scrollbar">
+          <ul className="space-y-3 mb-8 max-h-[30vh] overflow-y-auto pe-2 custom-scrollbar">
             {sessions.map((session, index) => (
               <li
                 key={session.id}
@@ -143,16 +143,16 @@ export function SessionLimitModal({ sessions, onClose }: SessionLimitModalProps)
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-[#5d6558]">
                       <div className="flex items-center gap-1.5">
-                        <Globe className="w-3 h-3" />
+                        <Globe className="w-4 h-4" />
                         <span>{session.ip_address}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <Clock className="w-3 h-3" />
+                        <Clock className="w-4 h-4" />
                         <span>{new Date(session.last_activity).toLocaleDateString()}</span>
                       </div>
                       {session.expires_at && (
                         <div className="flex items-center gap-1.5 col-span-full mt-1 text-[#20221f] font-medium">
-                          <Info className="w-3 h-3" />
+                          <Info className="w-4 h-4" />
                           <span>{t('expiresIn') || 'Expires in'}: {formatExpiry(session.expires_at)}</span>
                         </div>
                       )}
