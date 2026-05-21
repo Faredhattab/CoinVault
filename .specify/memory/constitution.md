@@ -1,25 +1,17 @@
 <!--
 Sync Impact Report
-Version change: 1.1.0 -> 1.2.0
+Version change: 1.2.0 -> 1.3.0
 Modified principles:
-- I. Clean Code by Default unchanged
-- II. Tested Behavior for Every Function unchanged
-- III. Minimalist, Modern UX expanded for multilingual accessibility
-- IV. Mobile-First Responsive Design expanded for RTL layout validation
-- V. Cloud-Native, Documented Operation expanded for FastAPI backend operation
-- VI. Multilingual and RTL Support unchanged
+- V. Cloud-Native, Documented Operation (expanded with documentation consolidation and temporary marking rules)
 Added sections:
-- Backend FastAPI technology standard
+- None
 Removed sections:
 - None
 Templates requiring updates:
-- updated: .specify/templates/plan-template.md
-- updated: .specify/templates/spec-template.md
-- updated: .specify/templates/tasks-template.md
-- updated: .specify/templates/checklist-template.md
-- updated: .agents/skills/speckit-tasks/SKILL.md
-- pending: .specify/templates/commands/*.md not present
-- pending: .specify/extensions/git/scripts/powershell/initialize-repo.ps1 has an unrelated parse error in a status string
+- ? updated: .specify/templates/plan-template.md
+- ? updated: .specify/templates/spec-template.md
+- ? updated: .specify/templates/tasks-template.md
+- ? updated: .specify/templates/checklist-template.md
 Follow-up TODOs:
 - None
 -->
@@ -68,8 +60,11 @@ environments. Runtime behavior MUST use environment-based configuration,
 stateless FastAPI application services where practical, structured logging,
 health checks, and documented operational assumptions. Documentation MUST live
 with the feature and be updated in the same change as code, tests, contracts,
-and deployment expectations. Rationale: reliable cloud operation requires
-software that can be deployed, diagnosed, and evolved without tribal knowledge.
+and deployment expectations. Non-SpecKit documentation MUST be consolidated into
+README.md or quickstart.md. Temporary documentation MUST be marked with [TMP] and
+will be removed in the next documentation update. Rationale: reliable cloud
+operation requires software that can be deployed, diagnosed, and evolved without
+tribal knowledge.
 
 ### VI. Multilingual and RTL Support
 The application MUST provide full multilingual support. English MUST be the
@@ -104,7 +99,9 @@ over machine-local assumptions. Secrets MUST NOT be committed to the repository.
 
 Living documentation is mandatory. Each feature MUST keep its specification,
 plan, quickstart, contracts, and operational notes accurate enough for a new
-contributor to understand, test, and deploy the feature.
+contributor to understand, test, and deploy the feature. All non-SpecKit
+documentation MUST reside in README.md or quickstart.md. Temporary notes MUST be
+marked with [TMP].
 
 ## Development Workflow
 
@@ -112,7 +109,8 @@ Every feature MUST pass the Constitution Check before research begins and again
 after design. The check MUST explicitly cover clean-code impact, test coverage
 for every production function, minimalist UX, mobile-first responsive behavior,
 English and Arabic localization with RTL behavior, Next.js frontend fit,
-FastAPI backend fit, cloud-native operation, and living documentation updates.
+FastAPI backend fit, cloud-native operation, and living documentation updates
+including document consolidation and [TMP] marking rules.
 
 Implementation tasks MUST be organized by independently testable user story.
 Tests MUST be created before or alongside the implementation task they verify,
@@ -139,4 +137,4 @@ implementation, and review time. Any approved exception MUST be documented in th
 feature plan's Complexity Tracking section with the reason, rejected simpler
 alternative, owner, and review date.
 
-**Version**: 1.2.0 | **Ratified**: 2026-05-11 | **Last Amended**: 2026-05-11
+**Version**: 1.3.0 | **Ratified**: 2026-05-11 | **Last Amended**: 2026-05-18

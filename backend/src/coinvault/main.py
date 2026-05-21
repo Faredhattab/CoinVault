@@ -1,10 +1,17 @@
 from __future__ import annotations
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+import logging
+import traceback
 
+from fastapi import FastAPI, Request, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+
+from coinvault.api.auth import router as auth_router
 from coinvault.api.health import router as health_router
 from coinvault.core.config import settings
+
+logger = logging.getLogger("coinvault")
 
 
 def create_app() -> FastAPI:
@@ -17,11 +24,30 @@ def create_app() -> FastAPI:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=cors_origins,
-        allow_credentials=False,
-        allow_methods=["GET"],
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         allow_headers=["*"],
     )
-    app.include_router(health_router)
+
+    app.include_router(health_router, prefix="/api/v1")
+    app.include_router(auth_router, prefix="/api/v1")
+
+    # Global exception handler (registered after routers)
+    @app.exception_handler(Exception)
+    async def global_exception_handler(request: Request, exc: Exception):
+        logger.error(
+            f"Unhandled exception: {type(exc).__name__}: {str(exc)}\n"
+            f"Path: {request.url.path}\n"
+            f"Traceback: {traceback.format_exc()}"
+        )
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={
+                "detail": f"Internal server error: {type(exc).__name__}: {str(exc)}",
+                "type": type(exc).__name__,
+            },
+        )
+
     return app
 
 

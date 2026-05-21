@@ -6,7 +6,13 @@ test("English public and admin placeholders render on mobile", async ({ page }) 
   await expect(page.getByRole("heading", { name: "CoinVault public collection shell" })).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
 
-  await page.goto("/en/admin");
+  // Login to access admin page
+  await page.goto("/en/login");
+  await page.fill('#email', 'admin@example.com');
+  await page.fill('#password', 'SecurePassword123!');
+  await page.click('button[type="submit"]');
+  await page.waitForURL(/\/en\/admin/, { timeout: 15000 });
+
   await expect(page.getByRole("heading", { name: "CoinVault admin shell" })).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
 });

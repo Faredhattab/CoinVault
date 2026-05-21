@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { getDirection, isSupportedLocale, type Locale } from "@/i18n";
+import { getDirection, isSupportedLocale, type Locale, getMessages } from "@/i18n";
+import { NextIntlClientProvider } from "next-intl";
 import "./styles.css";
 
 export const metadata: Metadata = {
@@ -21,10 +22,15 @@ export default async function LocaleLayout({
 }) {
   const { locale: rawLocale } = await params;
   const locale: Locale = isSupportedLocale(rawLocale) ? rawLocale : "en";
+  const messages = getMessages(locale);
 
   return (
     <html lang={locale} dir={getDirection(locale)}>
-      <body>{children}</body>
+      <body>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          {children}
+        </NextIntlClientProvider>
+      </body>
     </html>
   );
 }

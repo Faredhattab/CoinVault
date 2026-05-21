@@ -23,6 +23,11 @@ pytest-cache-files-*/
 venv/
 *.egg-info/
 
+# Testing artifacts
+test-results/
+playwright-report/
+.last-run.json
+
 # Supabase local runtime
 supabase/.branches/
 supabase/.temp/
@@ -33,6 +38,7 @@ supabase/.temp/
 .claude/
 specs/
 docs/
+.gemini/
 
 
 # OS / editor
@@ -42,3 +48,9 @@ Thumbs.db
 *.swp
 .vscode/
 .idea/
+
+# Playwright
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
