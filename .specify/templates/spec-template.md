@@ -94,7 +94,7 @@
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
 - **FR-006**: User-facing interfaces MUST be mobile-first, responsive, accessible, and minimalist.
 - **FR-007**: Frontend requirements MUST assume Next.js unless an approved exception is documented.
-- **FR-008**: Feature documentation MUST be updated with user behavior, test approach, and operational assumptions.
+- **FR-008**: Feature documentation MUST be updated; non-SpecKit docs consolidated into README/quickstart; temporary docs marked [TMP].
 - **FR-009**: User-facing text MUST support English as the default language and Arabic as a fully supported RTL language.
 - **FR-010**: Backend requirements MUST assume FastAPI with typed request/response contracts unless an approved exception is documented.
 

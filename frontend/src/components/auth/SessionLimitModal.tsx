@@ -83,7 +83,7 @@ export function SessionLimitModal({ sessions, onClose }: SessionLimitModalProps)
   return (
     <div className="fixed inset-0 bg-[#20221f]/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-[#d8dccf] animate-in zoom-in-95 duration-200">
-        <div className="bg-[#ffd9d6] p-6 flex items-start justify-between border-b border-[#7b1d17]/10">
+        <div role="alert" className="bg-[#ffd9d6] p-6 flex items-start justify-between border-b border-[#7b1d17]/10">
           <div className="flex items-center gap-4">
             <div className="bg-[#7b1d17] text-white p-2 rounded-xl">
               <ShieldAlert className="w-6 h-6" />

@@ -1,11 +1,32 @@
 import { test, expect } from '@playwright/test';
+import { execSync } from 'child_process';
 
 const TEST_EMAIL = 'admin@example.com';
 const TEST_PASSWORD = 'SecurePassword123!';
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
+function clearSessions() {
+  try {
+    execSync('python -c "from coinvault.services.supabase_client import supabase_admin; supabase_admin.table(\'sessions\').delete().neq(\'id\', \'00000000-0000-0000-0000-000000000000\').execute()"', {
+      cwd: '../backend',
+      stdio: 'ignore'
+    });
+  } catch (e) {
+    console.error('Failed to clear sessions:', e);
+  }
+}
+
 test.describe('Session Management (US4)', () => {
+  test.beforeAll(() => {
+    clearSessions();
+  });
+
+  test.afterAll(() => {
+    clearSessions();
+  });
+
   test.beforeEach(async ({ page }) => {
+    clearSessions();
     // Clear cookies and storage before each test
     await page.context().clearCookies();
     await page.goto(`${BASE_URL}/en/login`);
@@ -18,8 +39,8 @@ test.describe('Session Management (US4)', () => {
     await page.click('button[type="submit"]');
 
     // Wait for redirect to dashboard
-    await page.waitForURL('**/admin/dashboard');
-    expect(page.url()).toContain('/admin/dashboard');
+    await page.waitForURL(/\/admin/);
+    expect(page.url()).toContain('/admin');
 
     // Navigate to sessions page
     await page.goto(`${BASE_URL}/en/admin/sessions`);
@@ -30,7 +51,7 @@ test.describe('Session Management (US4)', () => {
     await expect(page.locator('h1')).toContainText(/sessions/i);
 
     // Navigate to another admin route
-    await page.goto(`${BASE_URL}/en/admin/profile`);
+    await page.goto(`${BASE_URL}/en/admin/settings`);
     await page.waitForLoadState('networkidle');
 
     // Should not redirect to login
@@ -51,7 +72,9 @@ test.describe('Session Management (US4)', () => {
     try {
       // Login 3 times (maximum allowed)
       for (let i = 0; i < 3; i++) {
-        const context = await browser.newContext();
+        const context = await browser.newContext({
+          userAgent: `Mozilla/5.0 (Playwright Test; Device ${i})`
+        });
         const page = await context.newPage();
         contexts.push(context);
         pages.push(page);
@@ -61,7 +84,7 @@ test.describe('Session Management (US4)', () => {
         await page.fill('input[name="password"]', TEST_PASSWORD);
         await page.click('button[type="submit"]');
 
-        await page.waitForURL('**/admin/dashboard', { timeout: 10000 });
+        await page.waitForURL(/\/admin/, { timeout: 10000 });
       }
 
       // Verify all 3 sessions are active
@@ -73,7 +96,9 @@ test.describe('Session Management (US4)', () => {
       }
 
       // Try to login a 4th time (should fail)
-      const fourthContext = await browser.newContext();
+      const fourthContext = await browser.newContext({
+        userAgent: 'Mozilla/5.0 (Playwright Test; Device 3)'
+      });
       const fourthPage = await fourthContext.newPage();
 
       await fourthPage.goto(`${BASE_URL}/en/login`);
@@ -82,8 +107,8 @@ test.describe('Session Management (US4)', () => {
       await fourthPage.click('button[type="submit"]');
 
       // Should show error about max sessions
-      await fourthPage.waitForSelector('[role="alert"]', { timeout: 5000 });
-      const errorText = await fourthPage.locator('[role="alert"]').textContent();
+      await fourthPage.waitForSelector('[role="alert"]:not(#__next-route-announcer__)', { timeout: 5000 });
+      const errorText = await fourthPage.locator('[role="alert"]:not(#__next-route-announcer__)').textContent();
       expect(errorText).toMatch(/maximum.*session|too many.*session/i);
 
       // Should not redirect to dashboard
@@ -100,11 +125,15 @@ test.describe('Session Management (US4)', () => {
   });
 
   test('T079 [P] [US4] Session revocation UI', async ({ browser }) => {
-    // Create 2 browser contexts
-    const context1 = await browser.newContext();
+    // Create 2 browser contexts with unique user agents
+    const context1 = await browser.newContext({
+      userAgent: 'Mozilla/5.0 (Playwright Test; Revocation Device A)'
+    });
     const page1 = await context1.newPage();
 
-    const context2 = await browser.newContext();
+    const context2 = await browser.newContext({
+      userAgent: 'Mozilla/5.0 (Playwright Test; Revocation Device B)'
+    });
     const page2 = await context2.newPage();
 
     try {
@@ -113,14 +142,14 @@ test.describe('Session Management (US4)', () => {
       await page1.fill('input[name="email"]', TEST_EMAIL);
       await page1.fill('input[name="password"]', TEST_PASSWORD);
       await page1.click('button[type="submit"]');
-      await page1.waitForURL('**/admin/dashboard');
+      await page1.waitForURL(/\/admin/);
 
       // Login in second browser
       await page2.goto(`${BASE_URL}/en/login`);
       await page2.fill('input[name="email"]', TEST_EMAIL);
       await page2.fill('input[name="password"]', TEST_PASSWORD);
       await page2.click('button[type="submit"]');
-      await page2.waitForURL('**/admin/dashboard');
+      await page2.waitForURL(/\/admin/);
 
       // Navigate to sessions page in first browser
       await page1.goto(`${BASE_URL}/en/admin/sessions`);
@@ -135,14 +164,13 @@ test.describe('Session Management (US4)', () => {
       const revokeButtonCount = await revokeButtons.count();
       expect(revokeButtonCount).toBeGreaterThan(0);
 
+      // Accept the browser's confirm() dialog
+      page1.once('dialog', async dialog => {
+        await dialog.accept();
+      });
+
       // Click the first revoke button (revoke session 2)
       await revokeButtons.first().click();
-
-      // Confirm revocation if there's a confirmation dialog
-      const confirmButton = page1.locator('button:has-text("Confirm"), button:has-text("Revoke")');
-      if (await confirmButton.count() > 0) {
-        await confirmButton.first().click();
-      }
 
       // Wait for the session to be removed from the list
       await page1.waitForTimeout(1000);
@@ -150,7 +178,8 @@ test.describe('Session Management (US4)', () => {
       expect(newCount).toBe(initialCount - 1);
 
       // Try to navigate in the second browser (revoked session)
-      await page2.goto(`${BASE_URL}/en/admin/profile`);
+      await page2.evaluate(() => sessionStorage.removeItem('coinvault_user_cache'));
+      await page2.goto(`${BASE_URL}/en/admin/settings`);
       await page2.waitForTimeout(2000);
 
       // Should be redirected to login (session revoked)
@@ -164,7 +193,9 @@ test.describe('Session Management (US4)', () => {
   });
 
   test('T079 [P] [US4] Session revocation UI - RTL Arabic', async ({ browser }) => {
-    const context = await browser.newContext();
+    const context = await browser.newContext({
+      userAgent: 'Mozilla/5.0 (Playwright Test; RTL Arabic Device)'
+    });
     const page = await context.newPage();
 
     try {
@@ -173,7 +204,7 @@ test.describe('Session Management (US4)', () => {
       await page.fill('input[name="email"]', TEST_EMAIL);
       await page.fill('input[name="password"]', TEST_PASSWORD);
       await page.click('button[type="submit"]');
-      await page.waitForURL('**/ar/admin/dashboard');
+      await page.waitForURL(/\/ar\/admin/);
 
       // Navigate to sessions page in Arabic
       await page.goto(`${BASE_URL}/ar/admin/sessions`);

@@ -15,9 +15,7 @@ logger = logging.getLogger("coinvault")
 
 
 def create_app() -> FastAPI:
-    cors_origins = [
-        origin.strip() for origin in settings.cors_origins.split(",") if origin.strip()
-    ]
+    cors_origins = [origin.strip() for origin in settings.cors_origins.split(",") if origin.strip()]
     app = FastAPI(
         title="CoinVault Foundation API",
         version="0.1.0",
@@ -46,9 +44,10 @@ def create_app() -> FastAPI:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={
                 "detail": f"Internal server error: {type(exc).__name__}: {str(exc)}",
-                "type": type(exc).__name__
-            }
+                "type": type(exc).__name__,
+            },
         )
+
     return app
 
 

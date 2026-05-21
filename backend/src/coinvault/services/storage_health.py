@@ -4,9 +4,7 @@ from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 
-def storage_reachable(
-    storage_url: str, timeout_seconds: float = 1.0
-) -> tuple[bool, str]:
+def storage_reachable(storage_url: str, timeout_seconds: float = 1.0) -> tuple[bool, str]:
     if not storage_url:
         return False, "Local storage service URL is not configured"
 

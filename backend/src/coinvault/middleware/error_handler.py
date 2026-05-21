@@ -46,10 +46,6 @@ def setup_error_handlers(app: FastAPI) -> None:
     @app.exception_handler(Exception)
     async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
         logger.error(
-            f"Global exception: {exc}", 
-            extra={"extra_fields": {"stack": traceback.format_exc()}}
+            f"Global exception: {exc}", extra={"extra_fields": {"stack": traceback.format_exc()}}
         )
-        return JSONResponse(
-            status_code=500,
-            content={"detail": "Internal server error"}
-        )
+        return JSONResponse(status_code=500, content={"detail": "Internal server error"})

@@ -39,7 +39,7 @@
 - **Next.js Frontend Standard**: Frontend work uses Next.js, or the Complexity Tracking table records an approved exception.
 - **FastAPI Backend Standard**: Backend work uses FastAPI with typed contracts, dependency injection, and OpenAPI metadata, or the Complexity Tracking table records an approved exception.
 - **Cloud-Native Operation**: Runtime configuration, logging, health checks, secrets handling, and deployment assumptions are defined.
-- **Living Documentation**: Spec, plan, quickstart, contracts, and operational notes will be updated with the implementation.
+- **Living Documentation**: Spec, plan, quickstart, contracts, and operational notes will be updated; non-SpecKit docs consolidated into README/quickstart; temporary docs marked [TMP].
 
 ## Project Structure
 

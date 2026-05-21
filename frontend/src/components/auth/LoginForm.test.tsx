@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { expect, test, vi, describe, beforeEach } from 'vitest'
 import { LoginForm } from './LoginForm'
 import { useAuth } from '@/hooks/useAuth'
-import { useRouter, useParams } from 'next/navigation'
+import { useRouter, useParams, useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 
 // Mocks
@@ -13,6 +13,7 @@ vi.mock('@/hooks/useAuth', () => ({
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
   useParams: vi.fn(),
+  useSearchParams: vi.fn(),
 }))
 
 vi.mock('next-intl', () => ({
@@ -23,6 +24,7 @@ describe('LoginForm', () => {
   const mockLogin = vi.fn()
   const mockPush = vi.fn()
   const mockT = vi.fn((key) => key)
+  const mockGet = vi.fn()
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -30,6 +32,7 @@ describe('LoginForm', () => {
     ;(useRouter as any).mockReturnValue({ push: mockPush })
     ;(useParams as any).mockReturnValue({ locale: 'en' })
     ;(useTranslations as any).mockReturnValue(mockT)
+    ;(useSearchParams as any).mockReturnValue({ get: mockGet })
   })
 
   test('renders login form', () => {

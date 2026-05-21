@@ -3,11 +3,12 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/useAuth'
-import { useRouter, useParams } from 'next/navigation'
+import { useRouter, useParams, useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { SessionLimitModal } from './SessionLimitModal'
+import { GoogleLoginButton } from './GoogleLoginButton'
 import { ShieldCheck, Mail, Lock, LogIn } from 'lucide-react'
 
 const loginSchema = z.object({
@@ -22,6 +23,7 @@ export function LoginForm() {
   const { login } = useAuth()
   const router = useRouter()
   const params = useParams()
+  const searchParams = useSearchParams()
   const locale = params?.locale as string || 'en'
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -29,6 +31,23 @@ export function LoginForm() {
     sessions: any[]
     message: string
   } | null>(null)
+
+  useEffect(() => {
+    const errorParam = searchParams.get('error')
+    if (errorParam) {
+      let msg = t('oauthGenericError') || 'An error occurred during OAuth login. Please try again.'
+      if (errorParam === 'access_denied') {
+        msg = t('oauthCancelled') || 'OAuth login was cancelled'
+      } else if (errorParam === 'email_exists') {
+        msg = t('emailExistsConflict') || 'This email is already registered with a password. Please log in and link your Google account from settings.'
+      } else if (errorParam === 'unauthorized') {
+        msg = t('oauthUnauthorized') || 'OAuth authorization failed. Please try again.'
+      } else if (errorParam === 'invalid_code') {
+        msg = t('invalidAuthCode') || 'Invalid authorization code. Please try logging in again.'
+      }
+      setError(msg)
+    }
+  }, [searchParams, t])
 
   const {
     register,
@@ -75,7 +94,7 @@ export function LoginForm() {
         className="space-y-5 p-8 bg-white rounded-xl border border-[#d8dccf]"
       >
         {error && (
-          <div className="p-4 bg-[#ffd9d6] border border-[#7b1d17] text-[#7b1d17] rounded-md text-sm font-bold flex items-center gap-3">
+          <div role="alert" className="p-4 bg-[#ffd9d6] border border-[#7b1d17] text-[#7b1d17] rounded-md text-sm font-bold flex items-center gap-3">
             <ShieldCheck className="w-5 h-5 shrink-0" />
             <span>{error}</span>
           </div>
@@ -139,6 +158,17 @@ export function LoginForm() {
             </>
           )}
         </button>
+
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-[#d8dccf]"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-4 bg-white text-[#5d6558] font-medium">{t('orContinueWith')}</span>
+          </div>
+        </div>
+
+        <GoogleLoginButton />
       </form>
 
       {limitExceeded && (

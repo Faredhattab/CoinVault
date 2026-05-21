@@ -73,7 +73,18 @@
       "Bash(xargs grep -l \"TODO\\\\|FIXME\\\\|XXX\\\\|HACK\")",
       "Bash(cat)",
       "Read(//tmp/**)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(pwsh -NoProfile -ExecutionPolicy Bypass -File .specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks)",
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -File .specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks)",
+      "Bash(test -f \"C:/Users/fared/CoinVault/frontend/app/[locale]/\\(admin\\)/settings/page.tsx\")",
+      "Bash(test -f \"C:/Users/fared/CoinVault/frontend/app/[locale]/auth/callback/google/page.tsx\")",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File \".specify/scripts/powershell/check-prerequisites.ps1\" -Json -RequireTasks -IncludeTasks)",
+      "Bash(supabase stop *)",
+      "Bash(awk '{print $1}')",
+      "Bash(xargs -r docker rm -f)",
+      "Bash(findstr :54322)",
+      "Bash(supabase start *)",
+      "Bash(npx tsc *)"
     ]
   }
 }

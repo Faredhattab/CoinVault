@@ -31,9 +31,7 @@ class RateLimiter:
             .execute()
         )
 
-        return (
-            response.count if response.count is not None else 0
-        ) >= self.max_attempts
+        return (response.count if response.count is not None else 0) >= self.max_attempts
 
     def log_failed_attempt(
         self, ip_address: str, email: str, reason: str, user_agent: str | None = None

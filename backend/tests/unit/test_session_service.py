@@ -36,13 +36,9 @@ def test_create_session(session_service: SessionService) -> None:
     # Mocking the insert call (no COUNT check anymore - handled by DB trigger)
     mock_response_insert = MagicMock()
     mock_response_insert.data = [{"id": str(uuid4())}]
-    client.table.return_value.insert.return_value.execute.return_value = (
-        mock_response_insert
-    )
+    client.table.return_value.insert.return_value.execute.return_value = mock_response_insert
 
-    session = session_service.create_session(
-        user_id, device_info, "127.0.0.1", "Mozilla/5.0"
-    )
+    session = session_service.create_session(user_id, device_info, "127.0.0.1", "Mozilla/5.0")
     assert session is not None
     assert client.table.called
 

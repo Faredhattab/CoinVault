@@ -161,5 +161,121 @@ export const authService = {
       sessionStorage.setItem(USER_CACHE_KEY, JSON.stringify(profile))
       return profile
     }
+  },
+
+  async initiateGoogleOAuth(mode: 'login' | 'link' = 'login'): Promise<string> {
+    const { data: { session } } = await supabase.auth.getSession()
+
+    if (mode === 'link') {
+      // For linking, call the link endpoint (requires auth)
+      if (!session) throw new Error('Not authenticated')
+
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/link/google`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.detail?.message || errorData.detail || 'Failed to initiate OAuth linking')
+      }
+
+      const data = await response.json()
+      return data.oauth_redirect_url
+    } else {
+      // For login, call the initiate endpoint (no auth required)
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/oauth/google`)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.detail?.message || errorData.detail || 'Failed to initiate OAuth flow')
+      }
+
+      const data = await response.json()
+      return data.oauth_url
+    }
+  },
+
+  async unlinkGoogleAccount(): Promise<void> {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) throw new Error('Not authenticated')
+
+    const response = await fetch(`${API_BASE_URL}/api/v1/auth/link/google`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${session.access_token}`,
+      },
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.detail?.message || errorData.detail || 'Failed to unlink Google account')
+    }
+
+    sessionStorage.removeItem(USER_CACHE_KEY)
+  },
+
+  async loginWithGoogle(code: string): Promise<{ success: boolean; user?: UserProfile }> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/oauth/google/callback?code=${code}`, {
+        method: 'GET',
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        const error = new Error(errorData.detail?.message || errorData.detail || 'OAuth login failed') as any
+        error.status = response.status
+        throw error
+      }
+
+      const authData: AuthResponse = await response.json()
+
+      // Cache user data
+      if (authData.user) {
+        sessionStorage.setItem(USER_CACHE_KEY, JSON.stringify(authData.user))
+      }
+
+      // Set session in Supabase client
+      const { error } = await supabase.auth.setSession({
+        access_token: authData.access_token,
+        refresh_token: authData.refresh_token,
+      })
+
+      if (error) {
+        console.error('Supabase setSession error:', error)
+        return { success: false }
+      }
+
+      return { success: true, user: authData.user }
+    } catch (error) {
+      console.error('Google login error:', error)
+      throw error
+    }
+  },
+
+  async linkGoogleAccount(code: string): Promise<{ success: boolean; message?: string }> {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) throw new Error('Not authenticated')
+
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/oauth/google/callback?code=${code}&link=true`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.detail?.message || errorData.detail || 'Failed to link Google account')
+      }
+
+      sessionStorage.removeItem(USER_CACHE_KEY)
+      return { success: true, message: 'Google account linked successfully' }
+    } catch (error: any) {
+      return { success: false, message: error.message }
+    }
   }
 }

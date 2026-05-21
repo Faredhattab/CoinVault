@@ -1,4 +1,3 @@
-
 from supabase import Client, create_client
 
 from coinvault.core.config import settings

@@ -24,7 +24,7 @@ supabase start
 
 # 3. Environment Setup
 cp .env.example .env
-# Edit .env and paste the SUPABASE_ANON_KEY and SUPABASE_SERVICE_ROLE_KEY 
+# Edit .env and paste the SUPABASE_ANON_KEY and SUPABASE_SERVICE_ROLE_KEY
 # from the 'supabase start' output.
 
 # 4. Backend Setup
@@ -65,16 +65,34 @@ npm run dev
 |-------|---------|-------|
 | **Backend Unit** | `cd backend && pytest` | Includes coverage & logic |
 | **Frontend Unit** | `cd frontend && npm test` | Vitest components/hooks |
-| **E2E (Playwright)** | `cd frontend && npx playwright test` | Full browser flows |
+| **E2E (Playwright)** | `cd frontend && npx playwright test --workers=1` | Full browser flows (run serially to prevent session limit conflicts) |
 
 ### 3.2 Manual Testing Checklist
+
+#### Basic Authentication
 - [ ] **Email Login**: Correct credentials vs incorrect.
 - [ ] **Input Validation**: Test empty fields and invalid email formats.
 - [ ] **Rate Limiting**: Verify lock-out after 5 failed attempts.
 - [ ] **RTL Support**: Navigate to `/ar/login` and verify layout.
+
+#### Google OAuth
+- [ ] **OAuth Login**: Click "Sign in with Google" button on login page.
+- [ ] **OAuth Callback**: Verify successful redirect after Google authentication.
+- [ ] **Account Linking**: Log in with email/password, go to settings, link Google account.
+- [ ] **Account Unlinking**: From settings, unlink Google account (requires password method).
+- [ ] **Cannot Unlink Last Provider**: Try unlinking when it's the only auth method.
+
+#### Session Management
 - [ ] **Session Renewal**: Log in twice from the same browser; verify only one session exists in `/admin/sessions`.
 - [ ] **Session Limit**: Log in from 3 different browsers, then try a 4th.
 - [ ] **Protected Routes**: Try accessing `/en/admin` without logging in.
+
+#### Role Management
+- [ ] **Admin Access**: Log in with admin credentials, verify full access to all admin pages.
+- [ ] **Role Display**: Go to Settings, verify role badge shows "Administrator".
+- [ ] **Non-Admin Denial**: If a non-admin user attempts to access `/en/admin`, verify redirect to forbidden page.
+- [ ] **Forbidden Page**: Verify the 403 forbidden page shows appropriate error message and navigation options.
+- [ ] **API Role Enforcement**: Call `GET /api/v1/health` without admin role, verify 403 response.
 
 ---
 
@@ -105,14 +123,23 @@ npm run dev
 
 ---
 
-## 📖 6. Features Reference
+## 6. Production Deployment Checklist
 
-### 6.1 Session Management
-- **Auto-Renewal**: Uses IP + User-Agent to detect returning devices and renew sessions instead of creating new ones.
-- **Limit Enforcement**: Strictly enforces 3 active sessions per user via database triggers.
-- **Cleanup**: Background job (pg_cron) runs hourly to deactivate expired sessions.
+- [ ] Set unique `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` for production
+- [ ] Set `INITIAL_ADMIN_EMAIL` and `INITIAL_ADMIN_PASSWORD` to strong credentials
+- [ ] Configure `CORS_ORIGINS` to production frontend domain only
+- [ ] Enable HTTPS on all endpoints
+- [ ] Set `SESSION_TIMEOUT_DAYS` appropriately (default: 7)
+- [ ] Configure Google OAuth redirect URIs for production domain in Google Cloud Console
+- [ ] Update `site_url` and `additional_redirect_urls` in Supabase Auth config
+- [ ] Remove placeholder keys and verify all `missing_required_values()` pass
+- [ ] Run database migrations on production Supabase instance
+- [ ] Seed initial admin account
+- [ ] Verify health check returns all services "ok"
+- [ ] Enable structured logging collection (e.g., CloudWatch, Datadog)
+- [ ] Set up rate limiting with Redis instead of in-memory store
+- [ ] Review RLS policies are active on all tables
 
-### 6.2 Tech Stack
-- **Frontend**: Next.js 15, Tailwind CSS 4, next-intl.
-- **Backend**: FastAPI, Python 3.12, Supabase-py.
-- **Infrastructure**: Local Supabase (Docker), Playwright.
+---
+
+**For detailed feature specifications, see [README.md](README.md) and the specs directory.**

@@ -4,9 +4,7 @@ import socket
 from urllib.parse import urlparse
 
 
-def database_reachable(
-    database_url: str, timeout_seconds: float = 1.0
-) -> tuple[bool, str]:
+def database_reachable(database_url: str, timeout_seconds: float = 1.0) -> tuple[bool, str]:
     parsed = urlparse(database_url)
     host = parsed.hostname
     port = parsed.port or 5432

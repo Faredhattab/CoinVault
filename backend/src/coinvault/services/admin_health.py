@@ -16,10 +16,10 @@ def admin_account_seeded(client: Client, settings: Settings) -> tuple[bool, str]
             .eq("role", "admin")
             .execute()
         )
-        
+
         if response.data and len(response.data) > 0:
             return True, f"Admin account ({admin_email}) is seeded"
-        
+
         return False, f"Admin account ({admin_email}) is not seeded"
     except Exception as e:
         return False, f"Failed to check admin account: {str(e)}"

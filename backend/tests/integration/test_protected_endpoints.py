@@ -17,6 +17,12 @@ def mock_supabase() -> Generator[MagicMock, None, None]:
 
 
 @pytest.fixture
+def mock_supabase_admin() -> Generator[MagicMock, None, None]:
+    with patch("coinvault.middleware.auth_middleware.supabase_admin") as mock:
+        yield mock
+
+
+@pytest.fixture
 def mock_auth_service() -> Generator[MagicMock, None, None]:
     with patch("coinvault.api.auth.auth_service") as mock:
         yield mock
@@ -28,13 +34,18 @@ def test_get_me_unauthenticated() -> None:
 
 
 def test_get_me_authenticated(
-    mock_supabase: MagicMock, mock_auth_service: MagicMock
+    mock_supabase: MagicMock, mock_supabase_admin: MagicMock, mock_auth_service: MagicMock
 ) -> None:
     user_id = str(uuid4())
     # Mock supabase.auth.get_user
     mock_supabase.auth.get_user.return_value = MagicMock(
         user=MagicMock(id=user_id, email="test@example.com")
     )
+
+    # Mock session query to return an active session
+    mock_session_response = MagicMock()
+    mock_session_response.data = [{"id": "00000000-0000-0000-0000-000000000000"}]
+    mock_supabase_admin.table.return_value.select.return_value.eq.return_value.eq.return_value.eq.return_value.gt.return_value.limit.return_value.execute.return_value = mock_session_response
 
     # Mock auth_service.get_user_profile
     mock_auth_service.get_user_profile = AsyncMock(
@@ -48,9 +59,7 @@ def test_get_me_authenticated(
         }
     )
 
-    response = client.get(
-        "/api/v1/auth/me", headers={"Authorization": "Bearer valid-token"}
-    )
+    response = client.get("/api/v1/auth/me", headers={"Authorization": "Bearer valid-token"})
 
     assert response.status_code == 200
     assert response.json()["email"] == "test@example.com"

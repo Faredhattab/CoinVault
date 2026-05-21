@@ -8,8 +8,8 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
-    // Exclude Playwright tests
-    exclude: ["**/node_modules/**", "**/tests/**"],
+    // Exclude Playwright tests and Next.js build files
+    exclude: ["**/node_modules/**", "**/tests/**", "**/.next/**"],
     // Only run unit tests in src/
     include: ["src/**/*.test.{ts,tsx}"],
     coverage: {
@@ -17,6 +17,7 @@ export default defineConfig({
       reporter: ["text", "json", "html"],
       exclude: [
         "node_modules/**",
+        ".next/**",
         "tests/**",
         "**/*.test.{ts,tsx}",
         "**/*.config.{ts,js}",

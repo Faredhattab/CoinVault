@@ -50,7 +50,7 @@ describe('LogoutButton', () => {
     })
   })
 
-  it('button remains clickable during logout', async () => {
+  it('button is disabled during logout', async () => {
     mockLogout.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)))
 
     renderWithIntl(<LogoutButton />)
@@ -58,7 +58,6 @@ describe('LogoutButton', () => {
 
     fireEvent.click(button)
 
-    // Button stays enabled since component doesn't track loading state
-    expect(button).not.toBeDisabled()
+    expect(button).toBeDisabled()
   })
 })

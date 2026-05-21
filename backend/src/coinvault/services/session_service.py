@@ -33,22 +33,22 @@ class SessionService:
     ) -> dict[str, Any] | None:
         """
         Find an existing active session for the same user + device fingerprint.
-        Device fingerprint = IP address + user agent
+        Device fingerprint = user agent (IP excluded from match due to INET format mismatch).
         """
         user_id_str = str(user_id)
         now = datetime.now(UTC)
 
-        response = (
+        query = (
             self.client.table("sessions")
             .select("*")
             .eq("user_id", user_id_str)
             .eq("is_active", True)
-            .eq("ip_address", ip_address)
             .eq("user_agent", user_agent)
-            .gt("expires_at", now.isoformat())  # Not expired
+            .gt("expires_at", now.isoformat())
             .limit(1)
-            .execute()
         )
+
+        response = query.execute()
 
         if response.data and len(response.data) > 0:
             return cast(dict[str, Any], response.data[0])
@@ -80,11 +80,18 @@ class SessionService:
             new_expiry = self._calculate_expiration()
             now = datetime.now(UTC)
 
-            response = self.client.table("sessions").update({
-                "last_activity": now.isoformat(),
-                "expires_at": new_expiry.isoformat(),
-                "device_info": device_info,  # Update device info in case it changed
-            }).eq("id", existing_session["id"]).execute()
+            response = (
+                self.client.table("sessions")
+                .update(
+                    {
+                        "last_activity": now.isoformat(),
+                        "expires_at": new_expiry.isoformat(),
+                        "device_info": device_info,  # Update device info in case it changed
+                    }
+                )
+                .eq("id", existing_session["id"])
+                .execute()
+            )
 
             if response.data and len(response.data) > 0:
                 return cast(dict[str, Any], response.data[0])
@@ -173,13 +180,7 @@ class SessionService:
         Check if session is active and not expired.
         Updates last_activity for sliding window (with 5-minute cooldown to reduce writes).
         """
-        response = (
-            self.client.table("sessions")
-            .select("*")
-            .eq("id", session_id)
-            .single()
-            .execute()
-        )
+        response = self.client.table("sessions").select("*").eq("id", session_id).single().execute()
         session = response.data
 
         if not session or not isinstance(session, dict) or not session.get("is_active"):
@@ -211,10 +212,7 @@ class SessionService:
                     "last_activity": session.get("last_activity"),
                     "session_duration_seconds": (
                         (
-                            expires_at
-                            - datetime.fromisoformat(
-                                session.get("created_at", "").replace("Z", "+00:00")
-                            )
+                            expires_at - datetime.fromisoformat(session.get("created_at", ""))
                         ).total_seconds()
                         if session.get("created_at")
                         else None
@@ -249,13 +247,7 @@ class SessionService:
         Deactivate a session
         """
         # Get session details before revocation for logging
-        response = (
-            self.client.table("sessions")
-            .select("*")
-            .eq("id", session_id)
-            .single()
-            .execute()
-        )
+        response = self.client.table("sessions").select("*").eq("id", session_id).single().execute()
         session = response.data
 
         # Revoke the session
@@ -275,17 +267,13 @@ class SessionService:
                     "session_id": session_id,
                     "user_id": session.get("user_id"),
                     "ip_address": session.get("ip_address"),
-                    "device_browser": session.get("device_info", {}).get(
-                        "browser", "Unknown"
-                    ),
+                    "device_browser": session.get("device_info", {}).get("browser", "Unknown"),
                     "created_at": session.get("created_at"),
                     "last_activity": session.get("last_activity"),
                     "session_duration_seconds": (
                         (
                             datetime.now(UTC)
-                            - datetime.fromisoformat(
-                                session.get("created_at", "").replace("Z", "+00:00")
-                            )
+                            - datetime.fromisoformat(session.get("created_at", ""))
                         ).total_seconds()
                         if session.get("created_at")
                         else None

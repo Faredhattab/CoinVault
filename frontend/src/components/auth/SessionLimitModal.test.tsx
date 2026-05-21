@@ -14,11 +14,10 @@ describe('SessionLimitModal', () => {
   const mockSessions = [
     {
       id: '1',
-      device_info: { browser: 'Chrome', os: 'Windows', device_type: 'desktop' },
+      device: 'Chrome on Windows (desktop)',
       ip_address: '127.0.0.1',
       last_activity: new Date().toISOString(),
       expires_at: new Date().toISOString(),
-      is_current: false,
     },
   ]
 

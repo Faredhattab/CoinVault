@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Any
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class SessionBase(BaseModel):
@@ -17,11 +17,10 @@ class SessionCreate(SessionBase):
 
 
 class Session(SessionBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: UUID
     created_at: datetime
     last_activity: datetime
     expires_at: datetime
     is_active: bool = True
-
-    class Config:
-        from_attributes = True

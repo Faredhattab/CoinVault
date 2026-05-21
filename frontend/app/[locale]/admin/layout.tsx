@@ -1,4 +1,5 @@
 import { AuthGuard } from '@/components/guards/AuthGuard'
+import { RoleGuard } from '@/components/guards/RoleGuard'
 import { LogoutButton } from '@/components/auth/LogoutButton'
 import { ReactNode } from 'react'
 import Link from 'next/link'
@@ -18,16 +19,17 @@ export default async function AdminLayout({
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-[#f7f7f2] flex flex-col">
-        <header className="bg-white border-b border-[#d8dccf] px-6 py-4 flex justify-between items-center sticky top-0 z-10">
-          <div className="flex items-center gap-3">
-            <div className="bg-[#20221f] text-white p-1.5 rounded">
-              <Coins className="w-5 h-5" />
+      <RoleGuard requiredRole="admin">
+        <div className="min-h-screen bg-[#f7f7f2] flex flex-col">
+          <header className="bg-white border-b border-[#d8dccf] px-6 py-4 flex justify-between items-center sticky top-0 z-10">
+            <div className="flex items-center gap-3">
+              <div className="bg-[#20221f] text-white p-1.5 rounded">
+                <Coins className="w-5 h-5" />
+              </div>
+              <h2 className="text-xl font-bold text-[#20221f]">CoinVault Admin</h2>
             </div>
-            <h2 className="text-xl font-bold text-[#20221f]">CoinVault Admin</h2>
-          </div>
-          <LogoutButton />
-        </header>
+            <LogoutButton />
+          </header>
 
         <div className="flex-1 flex flex-col md:flex-row">
           {/* Sidebar */}
@@ -49,6 +51,13 @@ export default async function AdminLayout({
                 <span>{messages.admin.sessionsLink}</span>
               </Link>
               <Link
+                href={`/${locale}/admin/settings`}
+                className="flex items-center gap-3 p-2.5 rounded text-[#3e443b] hover:bg-[#f7f7f2] hover:text-[#20221f] transition-colors font-medium"
+              >
+                <Settings className="w-5 h-5" />
+                <span>{messages.admin.settingsLink}</span>
+              </Link>
+              <Link
                 href={`/${locale}/health`}
                 className="flex items-center gap-3 p-2.5 rounded text-[#3e443b] hover:bg-[#f7f7f2] hover:text-[#20221f] transition-colors font-medium"
               >
@@ -64,6 +73,7 @@ export default async function AdminLayout({
           </main>
         </div>
       </div>
+      </RoleGuard>
     </AuthGuard>
   )
 }

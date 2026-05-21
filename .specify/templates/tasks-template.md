@@ -172,7 +172,7 @@ Examples of foundational tasks (adjust based on your project):
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] TXXX [P] Living documentation updates in specs/, docs/, and quickstart.md
+- [ ] TXXX [P] Living documentation updates (specs/, docs/, quickstart.md); consolidate non-SpecKit docs; mark [TMP]
 - [ ] TXXX Code cleanup and refactoring
 - [ ] TXXX Performance optimization across all stories
 - [ ] TXXX [P] Additional unit, integration, and UI tests for uncovered paths

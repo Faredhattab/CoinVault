@@ -29,7 +29,7 @@ class Settings:
     rate_limit_login_attempts: int = 5
     rate_limit_window_minutes: int = 15
     initial_admin_email: str = "admin@example.com"
-    initial_admin_password: str = "SecurePassword123!"
+    initial_admin_password: str = ""
 
     @classmethod
     def from_env(cls) -> Settings:
@@ -44,9 +44,7 @@ class Settings:
                 "SUPABASE_SERVICE_ROLE_KEY", cls.supabase_service_role_key
             ),
             supabase_db_url=os.getenv("SUPABASE_DB_URL", cls.supabase_db_url),
-            supabase_storage_url=os.getenv(
-                "SUPABASE_STORAGE_URL", cls.supabase_storage_url
-            ),
+            supabase_storage_url=os.getenv("SUPABASE_STORAGE_URL", cls.supabase_storage_url),
             session_timeout_days=int(
                 os.getenv("SESSION_TIMEOUT_DAYS", str(cls.session_timeout_days))
             ),
@@ -54,21 +52,13 @@ class Settings:
                 os.getenv("MAX_CONCURRENT_SESSIONS", str(cls.max_concurrent_sessions))
             ),
             rate_limit_login_attempts=int(
-                os.getenv(
-                    "RATE_LIMIT_LOGIN_ATTEMPTS", str(cls.rate_limit_login_attempts)
-                )
+                os.getenv("RATE_LIMIT_LOGIN_ATTEMPTS", str(cls.rate_limit_login_attempts))
             ),
             rate_limit_window_minutes=int(
-                os.getenv(
-                    "RATE_LIMIT_WINDOW_MINUTES", str(cls.rate_limit_window_minutes)
-                )
+                os.getenv("RATE_LIMIT_WINDOW_MINUTES", str(cls.rate_limit_window_minutes))
             ),
-            initial_admin_email=os.getenv(
-                "INITIAL_ADMIN_EMAIL", cls.initial_admin_email
-            ),
-            initial_admin_password=os.getenv(
-                "INITIAL_ADMIN_PASSWORD", cls.initial_admin_password
-            ),
+            initial_admin_email=os.getenv("INITIAL_ADMIN_EMAIL", cls.initial_admin_email),
+            initial_admin_password=os.getenv("INITIAL_ADMIN_PASSWORD", cls.initial_admin_password),
         )
 
     def missing_required_values(self) -> list[str]:

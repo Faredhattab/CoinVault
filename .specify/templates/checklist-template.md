@@ -35,7 +35,7 @@
 - [ ] CHK005 Minimalist modern UX criteria are explicit
 - [ ] CHK006 FastAPI backend contracts, dependency wiring, and OpenAPI metadata are defined where backend work exists
 - [ ] CHK007 Cloud-native configuration, observability, and deployment assumptions are covered
-- [ ] CHK008 Living documentation updates are identified
+- [ ] CHK008 Living documentation updates identified (consolidation and [TMP] marking)
 
 ## Notes
 

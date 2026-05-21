@@ -21,7 +21,11 @@ def run_seeds() -> None:
     supabase: Client = create_client(url, key)
 
     email = os.environ.get("INITIAL_ADMIN_EMAIL", "admin@example.com")
-    password = os.environ.get("INITIAL_ADMIN_PASSWORD", "SecurePassword123!")
+    password = os.environ.get("INITIAL_ADMIN_PASSWORD", "")
+
+    if not password:
+        print("Error: INITIAL_ADMIN_PASSWORD must be set in environment variables.")
+        return
 
     print(f"Seeding initial admin: {email}")
 
@@ -31,7 +35,7 @@ def run_seeds() -> None:
         print("Checking for existing auth user...")
         users = supabase.auth.admin.list_users()
         user = next((u for u in users if u.email == email), None)
-        
+
         if user:
             user_id = user.id
             print(f"Found existing auth user: {user_id}")
@@ -58,6 +62,7 @@ def run_seeds() -> None:
             "email": email,
             "role": "admin",
             "linked_providers": ["password"],
+            "display_name": "CoinVault Admin",
         }
 
         supabase.table("profiles").upsert(profile_data).execute()

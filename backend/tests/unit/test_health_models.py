@@ -20,8 +20,6 @@ def test_aggregate_status_unavailable_when_any_service_unavailable() -> None:
 def test_aggregate_status_degraded_when_no_service_unavailable() -> None:
     services = {
         "web": ServiceHealth(status=HealthStatus.ok, message="ok"),
-        "backend": ServiceHealth(
-            status=HealthStatus.degraded, message="missing config"
-        ),
+        "backend": ServiceHealth(status=HealthStatus.degraded, message="missing config"),
     }
     assert aggregate_status(services) == HealthStatus.degraded
