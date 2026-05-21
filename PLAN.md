@@ -10,6 +10,7 @@ A cloud-native, mobile-first multilingual web application for managing and showc
 - paper money / banknotes
 
 The platform provides:
+- a premium, highly aesthetic public landing page (interactive hero, showcase carousel, live stats preview, interactive map teaser, newsletter subscription)
 - a private admin dashboard for collection management
 - a public-facing digital gallery for visitors
 
@@ -75,6 +76,7 @@ The MVP intentionally excludes:
 ---
 
 ## Public Features
+- premium landing page (interactive hero section, collection showcase carousel, quick stats teaser, newsletter form, interactive map preview)
 - browse collection
 - item detail pages
 - lightweight search
@@ -532,21 +534,37 @@ Implement collection management UI.
 
 ---
 
-# Phase 5 — Public Gallery
+# Phase 5 — Public Landing Page
+
+## Goal
+Implement a premium, high-converting public landing page that serves as the visual and interactive gateway to the platform.
+
+## Scope
+- **Premium Hero Section**: Dark-themed layout with HSL-tailored gold/emerald gradients, glassmorphism, modern typography, and clear calls-to-action (Explore Gallery, Admin Login).
+- **Spotlight Showcase Carousel**: Interactive display of selected items with smooth 3D flip card animations showing front/back images on hover.
+- **Dynamic Stats Widget**: Animated cards highlighting key collection stats (e.g., total items, unique countries, types) with micro-animations.
+- **Interactive Map Teaser**: Simplified geographic preview showing country markers to tease the main map page.
+- **Integrated Newsletter Subscription Form**: Embedded input with interactive hover/focus states and success animations.
+- **Mobile-First Layout**: Fluid layouts, responsive typography, and touch-friendly interface elements.
+
+---
+
+# Phase 6 — Public Gallery
 
 ## Goal
 Implement public collection browsing experience.
 
 ## Scope
-- item pages
-- public browsing
-- responsive layouts
+- item pages with UUID-based routing
+- public browsing grid and detailed lists
+- responsive layouts for phone/tablet
 - public share links
-- related items
+- related items recommendations
+- *Integration*: Connect landing page showcase links to item detail pages.
 
 ---
 
-# Phase 6 — Search & Filtering
+# Phase 7 — Search & Filtering
 
 ## Goal
 Implement lightweight collection search.
@@ -560,7 +578,7 @@ Implement lightweight collection search.
 
 ---
 
-# Phase 7 — Statistics & Visualization
+# Phase 8 — Statistics & Visualization
 
 ## Goal
 Implement collection analytics.
@@ -571,10 +589,11 @@ Implement collection analytics.
 - historical distribution
 - duplicated items
 - public/private statistics
+- *Integration*: Connect real backend stats to update the landing page dynamic stats widget.
 
 ---
 
-# Phase 8 — Interactive World Map
+# Phase 9 — Interactive World Map
 
 ## Goal
 Visualize collection origins geographically.
@@ -584,10 +603,11 @@ Visualize collection origins geographically.
 - OpenStreetMap integration
 - country-level markers
 - related item previews
+- *Integration*: Replace mocked map teaser on the landing page with real interactive Leaflet integration showing active country markers.
 
 ---
 
-# Phase 9 — Export Features
+# Phase 10 — Export Features
 
 ## Goal
 Support collection exports.
@@ -599,7 +619,7 @@ Support collection exports.
 
 ---
 
-# Phase 10 — Newsletter System
+# Phase 11 — Newsletter System
 
 ## Goal
 Implement lightweight subscriber system.
@@ -609,33 +629,34 @@ Implement lightweight subscriber system.
 - subscriber management
 - manual notification sending
 - new additions notifications
+- *Integration*: Connect landing page subscription form to the backend subscriber endpoints.
 
 ---
 
-# Phase 11 — Arabic Localization
+# Phase 12 — Arabic Localization
 
 ## Goal
 Complete Arabic language support.
 
 ## Scope
-- RTL layouts
-- Arabic translations
+- RTL layouts and Arabic translations
 - Arabic search support
 - Arabic metadata rendering
+- *Integration*: Full RTL rendering, translation, and custom Arabic typography (Tajawal/Cairo) for the landing page hero and sections.
 
 ---
 
-# Phase 12 — Final Hardening & Optimization
+# Phase 13 — Final Hardening & Optimization
 
 ## Goal
 Prepare MVP for stable deployment.
 
 ## Scope
-- performance optimization
-- mobile optimization
-- image optimization
-- SEO improvements
-- accessibility review
+- performance optimization (critical for image-heavy landing page assets)
+- mobile optimization and touch responsiveness
+- image optimization for high-resolution coin uploads
+- SEO improvements (meta tags, sitemap, structured data for collection items)
+- accessibility review (WCAG compliant colors, screen reader labels for maps/charts)
 - security review
 
 ---
@@ -657,6 +678,7 @@ Prepare MVP for stable deployment.
 # Success Criteria
 
 The MVP is considered successful when:
+- landing page delivers a premium, highly engaging first impression in both English and Arabic
 - admin can fully manage collection items
 - visitors can browse collection publicly
 - mobile experience is smooth

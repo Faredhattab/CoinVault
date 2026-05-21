@@ -9,6 +9,8 @@ from fastapi.responses import JSONResponse
 
 from coinvault.api.auth import router as auth_router
 from coinvault.api.health import router as health_router
+from coinvault.api.categories import router as categories_router
+from coinvault.api.items import router as items_router
 from coinvault.core.config import settings
 
 logger = logging.getLogger("coinvault")
@@ -31,6 +33,8 @@ def create_app() -> FastAPI:
 
     app.include_router(health_router, prefix="/api/v1")
     app.include_router(auth_router, prefix="/api/v1")
+    app.include_router(categories_router, prefix="/api/v1")
+    app.include_router(items_router, prefix="/api/v1")
 
     # Global exception handler (registered after routers)
     @app.exception_handler(Exception)

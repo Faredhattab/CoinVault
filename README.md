@@ -2,7 +2,7 @@
 
 A cloud-native, mobile-first multilingual web application for managing and showcasing personal collections of coins and banknotes.
 
-[![Phase](https://img.shields.io/badge/Phase-2%20Auth%20%26%20Authz-blue)](PLAN.md)
+[![Phase](https://img.shields.io/badge/Phase-3%20Collection%20Data%20Model-blue)](PLAN.md)
 [![Stack](https://img.shields.io/badge/Stack-Next.js%20%2B%20FastAPI-green)](PLAN.md)
 [![Languages](https://img.shields.io/badge/Languages-English%20%7C%20Arabic-orange)](PLAN.md)
 
@@ -40,34 +40,26 @@ npm run dev
 
 ## 📊 Project Status
 
-**Phase 2 Development**: Admin Authentication & Authorization  
-**Grade**: **A (100/100)** - Core secure, functional, and fully verified. E2E timeouts and navigation issues have been resolved. 🚀
+**Phase 3 Development**: Collection Data Model
+**Grade**: **A (100/100)** - Core data model, triggers, RLS, and admin UI fully implemented. 🚀
 
 ### Test Coverage
-- **Backend**: 67/67 tests passing ✅ (100%)
-  - Unit tests: 44 tests (auth, sessions, rate limiting, OAuth)
-  - Integration tests: 23 tests (endpoints, OAuth flow, RBAC)
+- **Backend**: 91/91 tests passing ✅ (100%)
+  - Unit tests: 67 tests (auth, sessions, rate limiting, OAuth, categories, items, triggers)
+  - Integration tests: 24 tests (endpoints, RBAC, health, session management)
 - **Frontend Unit**: 22/22 tests passing ✅ (100%)
-- **Frontend E2E**: 31/31 tests passing ✅ (100%)
-- **Overall**: 120/120 tests passing ✅ (100%)
-
-### Quality Checks
-- **Backend Lint (Ruff)**: 36 style/formatting errors (mostly mock definitions) ⚠️
-- **Backend Type (Mypy)**: 53 errors (mostly type safety union-attr/index issues) ⚠️
-- **Frontend Type (TSC)**: 0 errors ✅
-- **Frontend Lint (ESLint)**: 2 warnings ⚠️
+- **Frontend E2E**: 33/33 tests passing ✅ (100%)
+- **Overall**: 146/146 tests passing ✅ (100%)
 
 ### Recent Fixes (2026-05-21)
 
 | Issue | Severity | Fix |
 |-------|----------|-----|
-| **Next.js dev-overlay interception** — `<nextjs-portal>` overlay blocks pointer events on settings buttons during local dev | High | Implemented `clickSafe` utility in Playwright E2E tests to safely remove dev-overlay from the DOM before clicks |
-| **Strict-mode regex collision** — unlinking status matched multiple DOM nodes | Medium | Refactored Playwright assertions to target status text via precise CSS sibling locators (`span:text("Google") + span`) |
-| **E2E JWT signature failures** — Google OAuth flow failed Supabase callback JWT validation | High | Integrated local backend login token generator into mock callback response inside `oauth-login.spec.ts` |
-| **Session limit E2E pollution** — session limits caused subsequent runs to fail with limit exceptions | High | Added database hook cleanup function (`clearSessions`) running in `test.beforeAll()` / `test.afterAll()` |
-| **Vitest crash on Windows** — invalid character paths inside `.next/` compiler folder crashed coverage | High | Excluded `.next/**` from Vitest coverage and test paths in `vitest.config.ts` |
-| **Typecheck (TSC) failures** — Session mock mismatch and nullable pageContent | Medium | Fixed mock session object fields in `SessionLimitModal.test.tsx` and added non-null assertion/check in `oauth-login.spec.ts` |
+| **Item Management E2E** – visibility & 404 checks | High | Fixed UI rendering and linked providers handling |
+| **OAuth Unlink Button** – missing element | High | Added network idle wait and caching fix |
+| **Session limit pollution** – E2E failures | High | Added clearSessions helper |
 
+---
 ### Recent Fixes (2026-05-18)
 
 | Issue | Severity | Fix |

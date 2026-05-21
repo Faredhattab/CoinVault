@@ -135,4 +135,14 @@
     "revokeError": "Failed to revoke session. Please try again.",
     "retry": "Retry"
   }
+  "manualTesting": {
+    "categoryManagement": {
+      "depthLimit": "حد العمق: محاولة إنشاء فئة أعمق من 3 مستويات يجب أن يتم رفضها",
+      "cycleDetection": "اكتشاف الدورات: محاولة تعيين أصل الفئة إلى أحد أحفادها يجب أن تُمنع"
+    },
+    "itemManagement": {
+      "prefixGeneration": "إنشاء البادئة: يجب توليد بادئة العنصر تلقائياً بناءً على مسار الفئة",
+      "visibilityMasking": "إخفاء الرؤية: لا يجب إرجاع العناصر المخفيّة في واجهات API العامة"
+    }
+  }
 }

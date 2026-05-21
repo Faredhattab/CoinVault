@@ -6,6 +6,7 @@
  */
 
 import { test, expect, Locator, Page } from '@playwright/test';
+import { execSync } from 'child_process';
 
 async function clickSafe(page: Page, locator: Locator) {
   await page.evaluate(() => {
@@ -18,14 +19,37 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 const TEST_EMAIL = 'admin@example.com';
 const TEST_PASSWORD = 'SecurePassword123!';
 
+function clearSessions() {
+  try {
+    execSync('python -c "from coinvault.services.supabase_client import supabase_admin; supabase_admin.table(\'sessions\').delete().neq(\'id\', \'00000000-0000-0000-0000-000000000000\').execute()"', {
+      cwd: '../backend',
+      stdio: 'ignore'
+    });
+  } catch (e) {
+    console.error('Failed to clear sessions:', e);
+  }
+}
+
 test.describe('OAuth Account Linking (US2)', () => {
+  test.beforeAll(() => {
+    clearSessions();
+  });
+
+  test.afterAll(() => {
+    clearSessions();
+  });
+
   test.beforeEach(async ({ page }) => {
+    clearSessions();
+    await page.context().clearCookies();
     // Login with email/password first
     await page.goto(`${BASE_URL}/en/login`);
     await page.fill('input[name="email"]', TEST_EMAIL);
     await page.fill('input[name="password"]', TEST_PASSWORD);
     await page.click('button[type="submit"]');
     await page.waitForURL(/\/admin/);
+    // Wait for network to be idle to ensure no pending /me fetches overwrite our cache removal
+    await page.waitForLoadState('networkidle');
     // Clear user cache to ensure fresh fetches on settings page
     await page.evaluate(() => sessionStorage.removeItem('coinvault_user_cache'));
   });

@@ -93,6 +93,13 @@ npm run dev
 - [ ] **Non-Admin Denial**: If a non-admin user attempts to access `/en/admin`, verify redirect to forbidden page.
 - [ ] **Forbidden Page**: Verify the 403 forbidden page shows appropriate error message and navigation options.
 - [ ] **API Role Enforcement**: Call `GET /api/v1/health` without admin role, verify 403 response.
+#### Category Management
+- [ ] **Depth Limit**: Attempt to create a category hierarchy deeper than 3 levels; verify server rejects with appropriate error.
+- [ ] **Cycle Detection**: Try to set a category's parent to one of its descendants; confirm operation is blocked.
+
+#### Item Management
+- [ ] **Prefix Generation**: Create a new item and ensure its `prefix` field is auto-generated correctly based on category path.
+- [ ] **Visibility Masking**: Verify that items marked as hidden are not returned by public API endpoints.
 
 ---
 

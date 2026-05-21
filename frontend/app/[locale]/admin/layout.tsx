@@ -4,7 +4,7 @@ import { LogoutButton } from '@/components/auth/LogoutButton'
 import { ReactNode } from 'react'
 import Link from 'next/link'
 import { getMessages, normalizeLocale } from "@/i18n"
-import { LayoutDashboard, Shield, Settings, Activity, Coins } from "lucide-react"
+import { LayoutDashboard, Shield, Settings, Activity, Coins, Folder } from "lucide-react"
 
 export default async function AdminLayout({
   children,
@@ -42,6 +42,20 @@ export default async function AdminLayout({
               >
                 <LayoutDashboard className="w-5 h-5" />
                 <span>{messages.admin.dashboardLink}</span>
+              </Link>
+              <Link
+                href={`/${locale}/admin/categories`}
+                className="flex items-center gap-3 p-2.5 rounded text-[#3e443b] hover:bg-[#f7f7f2] hover:text-[#20221f] transition-colors font-medium"
+              >
+                <Folder className="w-5 h-5" />
+                <span>Categories</span>
+              </Link>
+              <Link
+                href={`/${locale}/admin/items`}
+                className="flex items-center gap-3 p-2.5 rounded text-[#3e443b] hover:bg-[#f7f7f2] hover:text-[#20221f] transition-colors font-medium"
+              >
+                <Coins className="w-5 h-5" />
+                <span>Items</span>
               </Link>
               <Link
                 href={`/${locale}/admin/sessions`}
