@@ -48,14 +48,14 @@ export default async function AdminLayout({
                 className="flex items-center gap-3 p-2.5 rounded text-[#3e443b] hover:bg-[#f7f7f2] hover:text-[#20221f] transition-colors font-medium"
               >
                 <Folder className="w-5 h-5" />
-                <span>Categories</span>
+                <span>{messages.admin.categoriesLink}</span>
               </Link>
               <Link
                 href={`/${locale}/admin/items`}
                 className="flex items-center gap-3 p-2.5 rounded text-[#3e443b] hover:bg-[#f7f7f2] hover:text-[#20221f] transition-colors font-medium"
               >
                 <Coins className="w-5 h-5" />
-                <span>Items</span>
+                <span>{messages.admin.itemsLink}</span>
               </Link>
               <Link
                 href={`/${locale}/admin/sessions`}

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, use } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { itemsService, Item, PublicItem } from '@/services/items'
 import { categoriesService, Category } from '@/services/categories'
 import { normalizeLocale } from '@/i18n'
@@ -30,6 +31,7 @@ export default function AdminItemsPage({
   const params = use(paramsPromise)
   const locale = normalizeLocale(params.locale)
   const router = useRouter()
+  const t = useTranslations('items')
 
   const [items, setItems] = useState<(Item | PublicItem)[]>([])
   const [categories, setCategories] = useState<Category[]>([])
@@ -53,7 +55,7 @@ export default function AdminItemsPage({
       setItems(itemsData)
       setCategories(categoriesData)
     } catch (err: any) {
-      setError(err.message || 'Failed to fetch items and categories.')
+      setError(err.message || t('fetchError'))
     } finally {
       setLoading(false)
     }
@@ -65,7 +67,7 @@ export default function AdminItemsPage({
 
   const handleDelete = async (item: Item | PublicItem) => {
     const title = locale === 'ar' ? (item.title_ar || item.title_en) : item.title_en
-    if (!confirm(`Are you sure you want to delete "${title}"? This action cannot be undone.`)) {
+    if (!confirm(t('deleteConfirm', { title }))) {
       return
     }
 
@@ -73,10 +75,10 @@ export default function AdminItemsPage({
       setError(null)
       setSuccess(null)
       await itemsService.deleteItem(item.uuid)
-      setSuccess(`Item "${title}" successfully deleted.`)
+      setSuccess(t('deleted', { title }))
       await fetchData()
     } catch (err: any) {
-      setError(err.message || 'Failed to delete item.')
+      setError(err.message || t('deleteError'))
     }
   }
 
@@ -108,9 +110,9 @@ export default function AdminItemsPage({
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-[#d8dccf] pb-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#20221f]">Collection Items</h1>
+          <h1 className="text-3xl font-bold text-[#20221f]">{t('title')}</h1>
           <p className="text-sm text-[#5d6558] mt-1">
-            Manage your numismatic collection items (coins and banknotes).
+            {t('description')}
           </p>
         </div>
         <Link
@@ -118,7 +120,7 @@ export default function AdminItemsPage({
           className="py-2.5 px-4 bg-[#20221f] text-white hover:bg-black font-bold rounded-lg transition-colors flex items-center gap-2 shadow-sm"
         >
           <Plus className="w-4 h-4" />
-          <span>Add Item</span>
+          <span>{t('addItem')}</span>
         </Link>
       </div>
 
@@ -127,7 +129,7 @@ export default function AdminItemsPage({
         <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg flex items-start gap-3">
           <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="font-bold">Error</h4>
+            <h4 className="font-bold">{t('error')}</h4>
             <p className="text-sm">{error}</p>
           </div>
         </div>
@@ -139,7 +141,7 @@ export default function AdminItemsPage({
             ✓
           </div>
           <div>
-            <h4 className="font-bold">Success</h4>
+            <h4 className="font-bold">{t('success')}</h4>
             <p className="text-sm">{success}</p>
           </div>
         </div>
@@ -152,7 +154,7 @@ export default function AdminItemsPage({
           <Search className="w-5 h-5 text-[#5d6558] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search by ID, title, denomination, or country..."
+            placeholder={t('searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-[#d8dccf] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#20221f]/10 focus:border-[#20221f] transition-all bg-[#f7f7f2]/30 text-sm"
@@ -166,9 +168,9 @@ export default function AdminItemsPage({
             onChange={(e) => setFilterType(e.target.value)}
             className="w-full px-3 py-2 border border-[#d8dccf] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#20221f]/10 focus:border-[#20221f] transition-all bg-white text-sm"
           >
-            <option value="">All Types</option>
-            <option value="Coin">Coins</option>
-            <option value="Banknote">Banknotes</option>
+            <option value="">{t('allTypes')}</option>
+            <option value="Coin">{t('coins')}</option>
+            <option value="Banknote">{t('banknotes')}</option>
           </select>
         </div>
 
@@ -179,7 +181,7 @@ export default function AdminItemsPage({
             onChange={(e) => setFilterCategory(e.target.value)}
             className="w-full px-3 py-2 border border-[#d8dccf] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#20221f]/10 focus:border-[#20221f] transition-all bg-white text-sm"
           >
-            <option value="">All Categories</option>
+            <option value="">{t('allCategories')}</option>
             {categories.map((cat) => (
               <option key={cat.uuid} value={cat.uuid}>
                 {cat.name_en} {cat.name_ar ? `(${cat.name_ar})` : ''}
@@ -193,18 +195,18 @@ export default function AdminItemsPage({
       {loading ? (
         <div className="flex justify-center items-center py-24 text-[#5d6558]">
           <Loader2 className="w-8 h-8 animate-spin mr-2" />
-          <span className="font-medium text-lg">Loading collection items...</span>
+          <span className="font-medium text-lg">{t('loading')}</span>
         </div>
       ) : filteredItems.length === 0 ? (
         <div className="bg-white rounded-xl border border-[#d8dccf] shadow-sm p-12 text-center">
           <div className="inline-flex p-4 bg-[#f7f7f2] text-[#5d6558] rounded-full mb-4">
             <Coins className="w-12 h-12" />
           </div>
-          <h3 className="text-xl font-bold text-[#20221f]">No items found</h3>
+          <h3 className="text-xl font-bold text-[#20221f]">{t('noItemsTitle')}</h3>
           <p className="text-[#5d6558] mt-2 max-w-md mx-auto text-sm">
-            {searchQuery || filterType || filterCategory 
-              ? "We couldn't find any items matching your active filters. Try clearing them or modifying search queries."
-              : "Your collection is empty! Get started by clicking the 'Add Item' button to add your first coin or banknote."}
+            {searchQuery || filterType || filterCategory
+              ? t('noItemsFiltered')
+              : t('noItemsEmpty')}
           </p>
           {(searchQuery || filterType || filterCategory) && (
             <button
@@ -215,7 +217,7 @@ export default function AdminItemsPage({
               }}
               className="mt-4 px-4 py-2 bg-[#f7f7f2] hover:bg-[#d8dccf] text-[#20221f] font-bold rounded-lg transition-colors text-sm"
             >
-              Clear Filters
+              {t('clearFilters')}
             </button>
           )}
         </div>
@@ -225,13 +227,13 @@ export default function AdminItemsPage({
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-[#f7f7f2] border-b border-[#d8dccf]">
-                  <th className="px-6 py-4 text-xs font-bold text-[#5d6558] uppercase tracking-wider">Collection ID</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#5d6558] uppercase tracking-wider">Item Details</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#5d6558] uppercase tracking-wider">Country & Year</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#5d6558] uppercase tracking-wider">Stock & Value</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#5d6558] uppercase tracking-wider">Visibility</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#5d6558] uppercase tracking-wider">Categories</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#5d6558] uppercase tracking-wider text-right">Actions</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#5d6558] uppercase tracking-wider">{t('colId')}</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#5d6558] uppercase tracking-wider">{t('colDetails')}</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#5d6558] uppercase tracking-wider">{t('colCountry')}</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#5d6558] uppercase tracking-wider">{t('colStock')}</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#5d6558] uppercase tracking-wider">{t('colVisibility')}</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#5d6558] uppercase tracking-wider">{t('colCategories')}</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#5d6558] uppercase tracking-wider text-right">{t('colActions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#f7f7f2]">
@@ -277,9 +279,9 @@ export default function AdminItemsPage({
 
                       {/* Stock & Value */}
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-[#20221f]">Qty: {item.amount ?? 0}</div>
+                        <div className="text-sm font-medium text-[#20221f]">{t('qty')} {item.amount ?? 0}</div>
                         {item.acquisition_year && (
-                          <div className="text-xs text-[#5d6558]">Acquired: {item.acquisition_year}</div>
+                          <div className="text-xs text-[#5d6558]">{t('acquired')} {item.acquisition_year}</div>
                         )}
                       </td>
 
@@ -293,12 +295,12 @@ export default function AdminItemsPage({
                           {isPrivate ? (
                             <>
                               <EyeOff className="w-3.5 h-3.5" />
-                              <span>Private</span>
+                              <span>{t('private')}</span>
                             </>
                           ) : (
                             <>
                               <Eye className="w-3.5 h-3.5" />
-                              <span>Public</span>
+                              <span>{t('public')}</span>
                             </>
                           )}
                         </span>
@@ -318,7 +320,7 @@ export default function AdminItemsPage({
                               </span>
                             ))
                           ) : (
-                            <span className="text-xs text-[#5d6558] italic">Uncategorized</span>
+                            <span className="text-xs text-[#5d6558] italic">{t('uncategorized')}</span>
                           )}
                         </div>
                       </td>
@@ -329,21 +331,21 @@ export default function AdminItemsPage({
                           <Link
                             href={`/${locale}/collection/${item.uuid}`}
                             target="_blank"
-                            title="View Public Details"
+                            title={t('viewPublic')}
                             className="p-1.5 text-[#5d6558] hover:text-[#20221f] hover:bg-[#f7f7f2] rounded transition-colors"
                           >
                             <ExternalLink className="w-4 h-4" />
                           </Link>
                           <Link
                             href={`/${locale}/admin/items/${item.uuid}/edit`}
-                            title="Edit Item"
+                            title={t('editItem')}
                             className="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
                           >
                             <Edit className="w-4 h-4" />
                           </Link>
                           <button
                             onClick={() => handleDelete(item)}
-                            title="Delete Item"
+                            title={t('deleteItem')}
                             className="p-1.5 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -357,8 +359,8 @@ export default function AdminItemsPage({
             </table>
           </div>
           <div className="bg-[#f7f7f2] px-6 py-3 border-t border-[#d8dccf] text-xs text-[#5d6558] flex justify-between items-center">
-            <span>Showing {filteredItems.length} of {items.length} items</span>
-            <span>Total Value: {items.length} units</span>
+            <span>{t('showing', { count: filteredItems.length, total: items.length })}</span>
+            <span>{t('totalValue', { count: items.length })}</span>
           </div>
         </div>
       )}

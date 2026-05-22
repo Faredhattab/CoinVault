@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { itemsService, ItemCreate } from '@/services/items'
 import { categoriesService, Category } from '@/services/categories'
 import { normalizeLocale } from '@/i18n'
+import { useTranslations } from 'next-intl'
 import { 
   ArrowLeft, 
   Save, 
@@ -26,6 +27,7 @@ export default function CreateItemPage({
 }) {
   const params = use(paramsPromise)
   const locale = normalizeLocale(params.locale)
+  const t = useTranslations('items.create')
   const router = useRouter()
 
   const [categories, setCategories] = useState<Category[]>([])
@@ -87,25 +89,25 @@ export default function CreateItemPage({
 
     // Validations
     if (!titleEn.trim()) {
-      setError('English Title is required.')
+      setError(t('titleRequired'))
       return
     }
     const cleanCountry = countryCode.trim().toUpperCase()
     if (!/^[A-Z]{2}$/.test(cleanCountry)) {
-      setError('Country Code must be a valid 2-letter ISO code (e.g. US, NL).')
+      setError(t('countryInvalid'))
       return
     }
     if (!denomination.trim()) {
-      setError('Denomination is required.')
+      setError(t('denomRequired'))
       return
     }
     const numericYear = parseInt(year)
     if (isNaN(numericYear) || numericYear < 0) {
-      setError('Year must be a positive integer.')
+      setError(t('yearInvalid'))
       return
     }
     if (amount < 0) {
-      setError('Amount must be greater than or equal to 0.')
+      setError(t('amountInvalid'))
       return
     }
 
@@ -113,7 +115,7 @@ export default function CreateItemPage({
     if (acquisitionYear.trim()) {
       numericAcqYear = parseInt(acquisitionYear)
       if (isNaN(numericAcqYear) || numericAcqYear < 0) {
-        setError('Acquisition Year must be a positive integer.')
+        setError(t('acquisitionInvalid'))
         return
       }
     }
@@ -123,8 +125,8 @@ export default function CreateItemPage({
 
       const tags = tagsInput
         .split(',')
-        .map(t => t.trim())
-        .filter(t => t.length > 0)
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0)
 
       const payload: ItemCreate = {
         type,
@@ -145,7 +147,7 @@ export default function CreateItemPage({
       }
 
       const newItem = await itemsService.createItem(payload)
-      setSuccess(`Successfully created item with Collection ID: ${newItem.collection_id}`)
+      setSuccess(t('created', { id: newItem.collection_id }))
       
       // Redirect back after a short delay
       setTimeout(() => {
@@ -153,7 +155,7 @@ export default function CreateItemPage({
       }, 1500)
 
     } catch (err: any) {
-      setError(err.message || 'An error occurred while creating the item.')
+      setError(err.message || t('createError'))
       setSubmitLoading(false)
     }
   }
@@ -167,15 +169,15 @@ export default function CreateItemPage({
           className="inline-flex items-center gap-1.5 text-sm font-medium text-[#5d6558] hover:text-[#20221f] transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Items</span>
+          <span>{t('backToItems')}</span>
         </Link>
       </div>
 
       {/* Header */}
       <div className="border-b border-[#d8dccf] pb-4 mb-6">
-        <h1 className="text-3xl font-bold text-[#20221f]">Add Collection Item</h1>
+        <h1 className="text-3xl font-bold text-[#20221f]">{t('title')}</h1>
         <p className="text-sm text-[#5d6558] mt-1">
-          Create a new coin or banknote record in your catalog.
+          {t('description')}
         </p>
       </div>
 
@@ -184,7 +186,7 @@ export default function CreateItemPage({
         <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg flex items-start gap-3">
           <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="font-bold">Error</h4>
+            <h4 className="font-bold">{t('error')}</h4>
             <p className="text-sm">{error}</p>
           </div>
         </div>
@@ -196,7 +198,7 @@ export default function CreateItemPage({
             ✓
           </div>
           <div>
-            <h4 className="font-bold">Success</h4>
+            <h4 className="font-bold">{t('success')}</h4>
             <p className="text-sm">{success}</p>
           </div>
         </div>
@@ -207,7 +209,7 @@ export default function CreateItemPage({
         {/* Core Type & Visibility selection */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 rounded-xl border border-[#d8dccf] shadow-sm">
           <div>
-            <label className="block text-sm font-bold text-[#20221f] mb-2">Item Type *</label>
+            <label className="block text-sm font-bold text-[#20221f] mb-2">{t('itemType')}</label>
             <div className="grid grid-cols-2 gap-4">
               <button
                 type="button"
@@ -219,7 +221,7 @@ export default function CreateItemPage({
                 }`}
               >
                 <Coins className="w-5 h-5" />
-                <span>Coin</span>
+                <span>{t('coin')}</span>
               </button>
               <button
                 type="button"
@@ -231,13 +233,13 @@ export default function CreateItemPage({
                 }`}
               >
                 <FileText className="w-5 h-5" />
-                <span>Banknote</span>
+                <span>{t('banknote')}</span>
               </button>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-[#20221f] mb-2">Visibility *</label>
+            <label className="block text-sm font-bold text-[#20221f] mb-2">{t('visibility')}</label>
             <div className="grid grid-cols-2 gap-4">
               <button
                 type="button"
@@ -249,7 +251,7 @@ export default function CreateItemPage({
                 }`}
               >
                 <Eye className="w-5 h-5" />
-                <span>Public Link</span>
+                <span>{t('publicLink')}</span>
               </button>
               <button
                 type="button"
@@ -261,7 +263,7 @@ export default function CreateItemPage({
                 }`}
               >
                 <EyeOff className="w-5 h-5" />
-                <span>Private (Admin-only)</span>
+                <span>{t('privateOnly')}</span>
               </button>
             </div>
           </div>
@@ -270,34 +272,34 @@ export default function CreateItemPage({
         {/* Localized Titles and Descriptions */}
         <div className="bg-white p-6 rounded-xl border border-[#d8dccf] shadow-sm space-y-6">
           <h2 className="text-lg font-bold text-[#20221f] border-b border-[#f7f7f2] pb-2">
-            Multilingual Text Details
+            {t('multilingualSection')}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* English Section */}
             <div className="space-y-4">
               <h3 className="text-sm font-bold text-[#5d6558] uppercase tracking-wider flex items-center gap-1.5">
-                <span>English Locale</span>
-                <span className="text-red-500">*</span>
+                <span>{t('englishLocale')}</span>
+                <span className="text-red-500">{t('required')}</span>
               </h3>
               <div>
-                <label htmlFor="title-en" className="block text-xs font-bold text-[#20221f] mb-1">Title *</label>
+                <label htmlFor="title-en" className="block text-xs font-bold text-[#20221f] mb-1">{t('titleLabel')}</label>
                 <input
                   id="title-en"
                   type="text"
                   required
-                  placeholder="e.g. 5 Guilders"
+                  placeholder={t('titlePlaceholder')}
                   value={titleEn}
                   onChange={(e) => setTitleEn(e.target.value)}
                   className="w-full px-3 py-2 border border-[#d8dccf] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#20221f]/10 focus:border-[#20221f] transition-all text-sm"
                 />
               </div>
               <div>
-                <label htmlFor="desc-en" className="block text-xs font-bold text-[#20221f] mb-1">Description</label>
+                <label htmlFor="desc-en" className="block text-xs font-bold text-[#20221f] mb-1">{t('descriptionLabel')}</label>
                 <textarea
                   id="desc-en"
                   rows={4}
-                  placeholder="English coin historical description..."
+                  placeholder={t('descriptionPlaceholder')}
                   value={descriptionEn}
                   onChange={(e) => setDescriptionEn(e.target.value)}
                   className="w-full px-3 py-2 border border-[#d8dccf] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#20221f]/10 focus:border-[#20221f] transition-all text-sm"
@@ -308,15 +310,15 @@ export default function CreateItemPage({
             {/* Arabic Section */}
             <div className="space-y-4">
               <h3 className="text-sm font-bold text-[#5d6558] uppercase tracking-wider flex items-center gap-1.5">
-                <span>Arabic Locale</span>
-                <span className="text-xs text-gray-400 font-normal">(Optional - English fallbacks apply)</span>
+                <span>{t('arabicLocale')}</span>
+                <span className="text-xs text-gray-400 font-normal">{t('arabicOptional')}</span>
               </h3>
               <div>
-                <label htmlFor="title-ar" className="block text-xs font-bold text-[#20221f] mb-1 text-right" dir="rtl">العنوان العربي</label>
+                <label htmlFor="title-ar" className="block text-xs font-bold text-[#20221f] mb-1 text-right" dir="rtl">{t('arabicTitleLabel')}</label>
                 <input
                   id="title-ar"
                   type="text"
-                  placeholder="مثال: ٥ غيلدر"
+                  placeholder={t('arabicTitlePlaceholder')}
                   value={titleAr}
                   onChange={(e) => setTitleAr(e.target.value)}
                   dir="rtl"
@@ -324,11 +326,11 @@ export default function CreateItemPage({
                 />
               </div>
               <div>
-                <label htmlFor="desc-ar" className="block text-xs font-bold text-[#20221f] mb-1 text-right" dir="rtl">الوصف العربي</label>
+                <label htmlFor="desc-ar" className="block text-xs font-bold text-[#20221f] mb-1 text-right" dir="rtl">{t('arabicDescLabel')}</label>
                 <textarea
                   id="desc-ar"
                   rows={4}
-                  placeholder="وصف تاريخي باللغة العربية..."
+                  placeholder={t('arabicDescPlaceholder')}
                   value={descriptionAr}
                   onChange={(e) => setDescriptionAr(e.target.value)}
                   dir="rtl"
@@ -342,38 +344,38 @@ export default function CreateItemPage({
         {/* Physical Attributes & Identifiers */}
         <div className="bg-white p-6 rounded-xl border border-[#d8dccf] shadow-sm">
           <h2 className="text-lg font-bold text-[#20221f] border-b border-[#f7f7f2] pb-2 mb-4">
-            Catalog & Country Identifiers
+            {t('catalogSection')}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <label htmlFor="country-code" className="block text-sm font-bold text-[#20221f] mb-1">
-                ISO Country Code *
+                {t('countryCode')}
               </label>
               <input
                 id="country-code"
                 type="text"
                 required
                 maxLength={2}
-                placeholder="e.g. NL, US, JO"
+                placeholder={t('countryPlaceholder')}
                 value={countryCode}
                 onChange={(e) => setCountryCode(e.target.value.toUpperCase())}
                 className="w-full px-3 py-2 border border-[#d8dccf] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#20221f]/10 focus:border-[#20221f] transition-all text-sm font-mono uppercase"
               />
               <span className="text-[10px] text-[#5d6558] mt-1 block">
-                Two-letter code to generate Collection ID (e.g. NL-0001)
+                {t('countryHelper')}
               </span>
             </div>
 
             <div>
               <label htmlFor="denomination" className="block text-sm font-bold text-[#20221f] mb-1">
-                Denomination *
+                {t('denomination')}
               </label>
               <input
                 id="denomination"
                 type="text"
                 required
-                placeholder="e.g. 5 Guilders, 1 Dollar"
+                placeholder={t('denomPlaceholder')}
                 value={denomination}
                 onChange={(e) => setDenomination(e.target.value)}
                 className="w-full px-3 py-2 border border-[#d8dccf] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#20221f]/10 focus:border-[#20221f] transition-all text-sm"
@@ -382,14 +384,14 @@ export default function CreateItemPage({
 
             <div>
               <label htmlFor="year" className="block text-sm font-bold text-[#20221f] mb-1">
-                Mintage / Print Year *
+                {t('year')}
               </label>
               <input
                 id="year"
                 type="number"
                 required
                 min={0}
-                placeholder="e.g. 1978"
+                placeholder={t('yearPlaceholder')}
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
                 className="w-full px-3 py-2 border border-[#d8dccf] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#20221f]/10 focus:border-[#20221f] transition-all text-sm"
@@ -401,16 +403,16 @@ export default function CreateItemPage({
         {/* Private Stock Metadata */}
         <div className="bg-white p-6 rounded-xl border border-[#d8dccf] shadow-sm">
           <h2 className="text-lg font-bold text-[#20221f] border-b border-[#f7f7f2] pb-2 mb-4">
-            Private Inventory Metadata
+            {t('inventorySection')}
           </h2>
           <p className="text-xs text-[#5d6558] mb-4">
-            These fields are completely masked and never shown on public pages or to anonymous visitors.
+            {t('inventoryHelper')}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label htmlFor="amount" className="block text-sm font-bold text-[#20221f] mb-1">
-                Quantity / Stock Count
+                {t('quantity')}
               </label>
               <input
                 id="amount"
@@ -425,13 +427,13 @@ export default function CreateItemPage({
 
             <div>
               <label htmlFor="acq-year" className="block text-sm font-bold text-[#20221f] mb-1">
-                Acquisition Year
+                {t('acquisitionYear')}
               </label>
               <input
                 id="acq-year"
                 type="number"
                 min={0}
-                placeholder="e.g. 2021"
+                placeholder={t('acquisitionPlaceholder')}
                 value={acquisitionYear}
                 onChange={(e) => setAcquisitionYear(e.target.value)}
                 className="w-full px-3 py-2 border border-[#d8dccf] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#20221f]/10 focus:border-[#20221f] transition-all text-sm"
@@ -444,17 +446,17 @@ export default function CreateItemPage({
         <div className="bg-white p-6 rounded-xl border border-[#d8dccf] shadow-sm">
           <h2 className="text-lg font-bold text-[#20221f] border-b border-[#f7f7f2] pb-2 mb-4 flex items-center gap-2">
             <Tag className="w-5 h-5 text-[#5d6558]" />
-            <span>Category Associations</span>
+            <span>{t('categorySection')}</span>
           </h2>
 
           {loadingCategories ? (
             <div className="flex items-center text-[#5d6558] text-sm py-4">
               <Loader2 className="w-4 h-4 animate-spin mr-2" />
-              <span>Loading categories...</span>
+              <span>{t('loadingCategories')}</span>
             </div>
           ) : categories.length === 0 ? (
             <div className="text-sm text-[#5d6558] italic py-2">
-              No categories available. You can create them in Category Management first.
+              {t('noCategories')}
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-60 overflow-y-auto p-1 border border-[#d8dccf]/30 rounded-lg">
@@ -491,19 +493,19 @@ export default function CreateItemPage({
         <div className="bg-white p-6 rounded-xl border border-[#d8dccf] shadow-sm space-y-4">
           <h2 className="text-lg font-bold text-[#20221f] border-b border-[#f7f7f2] pb-2 flex items-center gap-2">
             <ImageIcon className="w-5 h-5 text-[#5d6558]" />
-            <span>Image References</span>
+            <span>{t('imagesSection')}</span>
           </h2>
           <p className="text-xs text-[#5d6558]">
-            Input direct URL links to the hosted photos.
+            {t('imagesHelper')}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="front-img" className="block text-sm font-bold text-[#20221f] mb-1">Front Image URL</label>
+              <label htmlFor="front-img" className="block text-sm font-bold text-[#20221f] mb-1">{t('frontImage')}</label>
               <input
                 id="front-img"
                 type="url"
-                placeholder="https://example.com/images/front.jpg"
+                placeholder={t('frontPlaceholder')}
                 value={frontImage}
                 onChange={(e) => setFrontImage(e.target.value)}
                 className="w-full px-3 py-2 border border-[#d8dccf] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#20221f]/10 focus:border-[#20221f] transition-all text-sm"
@@ -513,7 +515,7 @@ export default function CreateItemPage({
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={frontImage}
-                    alt="Front View Preview"
+                    alt={t('frontAlt')}
                     className="object-contain w-full h-full bg-[#f7f7f2]"
                     onError={(e) => {
                       (e.target as HTMLElement).style.display = 'none';
@@ -524,11 +526,11 @@ export default function CreateItemPage({
             </div>
 
             <div>
-              <label htmlFor="back-img" className="block text-sm font-bold text-[#20221f] mb-1">Back Image URL</label>
+              <label htmlFor="back-img" className="block text-sm font-bold text-[#20221f] mb-1">{t('backImage')}</label>
               <input
                 id="back-img"
                 type="url"
-                placeholder="https://example.com/images/back.jpg"
+                placeholder={t('backPlaceholder')}
                 value={backImage}
                 onChange={(e) => setBackImage(e.target.value)}
                 className="w-full px-3 py-2 border border-[#d8dccf] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#20221f]/10 focus:border-[#20221f] transition-all text-sm"
@@ -538,7 +540,7 @@ export default function CreateItemPage({
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={backImage}
-                    alt="Back View Preview"
+                    alt={t('backAlt')}
                     className="object-contain w-full h-full bg-[#f7f7f2]"
                     onError={(e) => {
                       (e.target as HTMLElement).style.display = 'none';
@@ -553,16 +555,16 @@ export default function CreateItemPage({
         {/* Tags */}
         <div className="bg-white p-6 rounded-xl border border-[#d8dccf] shadow-sm">
           <h2 className="text-lg font-bold text-[#20221f] border-b border-[#f7f7f2] pb-2 mb-4">
-            Search Tags
+            {t('tagsSection')}
           </h2>
           <div>
             <label htmlFor="tags-input" className="block text-sm font-bold text-[#20221f] mb-1">
-              Comma-Separated Tags
+              {t('tagsLabel')}
             </label>
             <input
               id="tags-input"
               type="text"
-              placeholder="gold, rare, provincial, gulden"
+              placeholder={t('tagsPlaceholder')}
               value={tagsInput}
               onChange={(e) => setTagsInput(e.target.value)}
               className="w-full px-3 py-2 border border-[#d8dccf] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#20221f]/10 focus:border-[#20221f] transition-all text-sm"
@@ -576,7 +578,7 @@ export default function CreateItemPage({
             href={`/${locale}/admin/items`}
             className="py-2.5 px-5 bg-[#f7f7f2] hover:bg-[#d8dccf] text-[#20221f] font-bold rounded-lg transition-colors text-sm"
           >
-            Cancel
+            {t('cancelBtn')}
           </Link>
           <button
             type="submit"
@@ -588,7 +590,7 @@ export default function CreateItemPage({
             ) : (
               <Save className="w-4 h-4" />
             )}
-            <span>Save Item</span>
+            <span>{t('saveBtn')}</span>
           </button>
         </div>
       </form>

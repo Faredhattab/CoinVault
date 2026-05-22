@@ -3,6 +3,7 @@
 import React, { useState, useEffect, use } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { itemsService, PublicItem } from '@/services/items'
 import { normalizeLocale } from '@/i18n'
 import { 
@@ -27,6 +28,7 @@ export default function PublicItemDetailPage({
   const locale = normalizeLocale(params.locale)
   const uuid = params.uuid
   const router = useRouter()
+  const t = useTranslations('collection')
 
   const [item, setItem] = useState<PublicItem | null>(null)
   const [loading, setLoading] = useState(true)
@@ -41,7 +43,7 @@ export default function PublicItemDetailPage({
         setItem(data as PublicItem)
       } catch (err: any) {
         // Handle 404 and other access control errors
-        setError(err.message || 'Item not found or you do not have permission to view it.')
+        setError(err.message || t('permissionError'))
       } finally {
         setLoading(false)
       }
@@ -56,7 +58,7 @@ export default function PublicItemDetailPage({
     return (
       <div className="min-h-screen bg-[#f7f7f2] flex flex-col justify-center items-center text-[#5d6558] p-6">
         <Loader2 className="w-10 h-10 animate-spin mb-4 text-[#20221f]" />
-        <span className="font-semibold text-lg">Loading item showcase...</span>
+        <span className="font-semibold text-lg">{t('loading')}</span>
       </div>
     )
   }
@@ -67,15 +69,15 @@ export default function PublicItemDetailPage({
         <div className="p-4 bg-white rounded-full border border-[#d8dccf] shadow-sm mb-4">
           <Globe className="w-12 h-12 text-[#5d6558]" />
         </div>
-        <h1 className="text-3xl font-extrabold text-[#20221f] tracking-tight">404 - Item Not Found</h1>
+        <h1 className="text-3xl font-extrabold text-[#20221f] tracking-tight">{t('notFoundTitle')}</h1>
         <p className="text-[#5d6558] mt-2 max-w-md text-sm sm:text-base">
-          The requested coin or banknote could not be found, or it is set to private.
+          {t('notFoundMessage')}
         </p>
         <Link
           href={`/${locale}`}
           className="mt-6 px-6 py-2.5 bg-[#20221f] text-white hover:bg-black font-bold rounded-lg transition-colors text-sm shadow-sm"
         >
-          Return to Gallery
+          {t('returnToGallery')}
         </Link>
       </div>
     )
@@ -97,12 +99,12 @@ export default function PublicItemDetailPage({
             {locale === 'ar' ? (
               <>
                 <ChevronRight className="w-4 h-4" />
-                <span>العودة للمعرض</span>
+                <span>{t('backToGallery')}</span>
               </>
             ) : (
               <>
                 <ChevronLeft className="w-4 h-4" />
-                <span>Back to Gallery</span>
+                <span>{t('backToGallery')}</span>
               </>
             )}
           </Link>
@@ -132,11 +134,11 @@ export default function PublicItemDetailPage({
               ) : (
                 <div className="flex flex-col items-center justify-center text-[#5d6558]">
                   {item.type === 'Coin' ? <Coins className="w-16 h-16 opacity-30" /> : <FileText className="w-16 h-16 opacity-30" />}
-                  <span className="text-xs font-medium mt-2">No front image available</span>
+                  <span className="text-xs font-medium mt-2">{t('noFrontImage')}</span>
                 </div>
               )}
               <div className="absolute bottom-3 left-3 bg-[#20221f]/75 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider backdrop-blur-sm">
-                Front View
+                {t('frontView')}
               </div>
             </div>
 
@@ -150,7 +152,7 @@ export default function PublicItemDetailPage({
                   className="max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute bottom-3 left-3 bg-[#20221f]/75 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider backdrop-blur-sm">
-                  Back View
+                  {t('backView')}
                 </div>
               </div>
             )}
@@ -198,7 +200,7 @@ export default function PublicItemDetailPage({
                   <Calendar className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase font-bold text-[#5d6558] tracking-wider">Year</div>
+                  <div className="text-[10px] uppercase font-bold text-[#5d6558] tracking-wider">{t('year')}</div>
                   <div className="text-base font-extrabold text-[#20221f]">{item.year}</div>
                 </div>
               </div>
@@ -208,7 +210,7 @@ export default function PublicItemDetailPage({
                   <Globe className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase font-bold text-[#5d6558] tracking-wider">Origin</div>
+                  <div className="text-[10px] uppercase font-bold text-[#5d6558] tracking-wider">{t('origin')}</div>
                   <div className="text-base font-extrabold text-[#20221f]">{item.country_code}</div>
                 </div>
               </div>
@@ -217,7 +219,7 @@ export default function PublicItemDetailPage({
             {/* Description */}
             <div className="bg-white p-6 rounded-2xl border border-[#d8dccf] shadow-sm">
               <h3 className="text-sm font-bold text-[#5d6558] uppercase tracking-wider border-b border-[#f7f7f2] pb-2 mb-3">
-                History & Specifications
+                {t('historySection')}
               </h3>
               {description ? (
                 <p className="text-sm leading-relaxed text-[#3e443b] whitespace-pre-line font-medium">
@@ -225,7 +227,7 @@ export default function PublicItemDetailPage({
                 </p>
               ) : (
                 <p className="text-sm text-[#5d6558] italic">
-                  No description provided for this catalog item.
+                  {t('noDescription')}
                 </p>
               )}
             </div>
@@ -234,7 +236,7 @@ export default function PublicItemDetailPage({
             {item.categories && item.categories.length > 0 && (
               <div className="bg-white p-6 rounded-2xl border border-[#d8dccf] shadow-sm">
                 <h3 className="text-sm font-bold text-[#5d6558] uppercase tracking-wider border-b border-[#f7f7f2] pb-2 mb-3">
-                  Categories
+                  {t('categoriesSection')}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {item.categories.map((cat) => (
@@ -254,7 +256,7 @@ export default function PublicItemDetailPage({
             {item.tags && item.tags.length > 0 && (
               <div className="bg-white p-6 rounded-2xl border border-[#d8dccf] shadow-sm">
                 <h3 className="text-sm font-bold text-[#5d6558] uppercase tracking-wider border-b border-[#f7f7f2] pb-2 mb-3">
-                  Gallery Tags
+                  {t('tagsSection')}
                 </h3>
                 <div className="flex flex-wrap gap-1.5">
                   {item.tags.map((tag, idx) => (

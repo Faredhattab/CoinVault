@@ -4,6 +4,46 @@ This guide provides everything you need to get CoinVault running locally, verify
 
 ---
 
+## Features
+
+### Collection Management (Phase 3)
+- **Category Hierarchy**: Create and manage categories up to 3 levels deep with cycle detection and depth enforcement via DB triggers.
+- **Item CRUD**: Full create/read/update/delete for coins and banknotes with multilingual titles and descriptions (English + Arabic).
+- **Auto-Generated IDs**: Collection IDs auto-generated from country code using advisory locks for concurrency safety (e.g. `NL-0001`, `US-0042`).
+- **Visibility Control**: Toggle items between Public (gallery-visible) and Private (admin-only); private items fully masked from public API.
+- **Image References**: Attach front/back image URLs with live preview in admin forms.
+- **Category Tagging**: Associate items with one or more categories for multi-dimensional filtering and organization.
+- **Search Tags**: Comma-separated tags for discoverability across the gallery.
+- **Public Item Gallery**: Responsive showcase pages for individual items with full RTL Arabic support.
+- **Database RLS**: Row-Level Security policies ensure private items and sensitive inventory data (quantity, acquisition year) are never exposed to unauthenticated users.
+- **Admin Item Table**: Sortable/filterable table with search by ID, title, denomination, or country; type and category filters.
+- **Multilingual Fallback**: Arabic titles/descriptions fall back gracefully to English when not provided.
+
+### Authentication & Security (Phase 2)
+- **Email/Password Login**: 12+ char passwords with uppercase, lowercase, numbers, and special characters.
+- **Google OAuth**: One-click sign-in and account linking/unlinking from settings.
+- **Session Management**: 3-device limit enforced by DB trigger, auto-renewal for returning devices, remote revocation from admin dashboard.
+- **Rate Limiting**: 5 failed attempts per 15 minutes before lockout.
+- **Role-Based Access**: Multi-layer RBAC (Frontend guard, Backend middleware, Database RLS).
+- **Audit Logging**: All authentication events (login, logout, OAuth, linking) recorded with IP, user-agent, and timestamps.
+- **Account Linking**: Connect email/password and Google OAuth methods on a single account; cannot unlink last provider.
+
+### Platform & UX (Phase 1)
+- **Mobile-First Design**: Validated on mobile viewports before desktop; touch-friendly controls.
+- **Full i18n**: English (LTR) and Arabic (RTL) with locale-aware routing, dates, numbers, and validation messages. All user-facing strings externalized to JSON locale files.
+- **Health Dashboard**: Real-time status of web, backend, database, auth, and storage services.
+- **Spec-Driven Development**: SpecKit workflow with constitution checks at every phase.
+- **Accessible Navigation**: Keyboard navigable, semantic HTML, proper focus states and contrast.
+
+### Technical Highlights
+- **146 Automated Tests**: 91 backend (unit + integration), 22 frontend unit, 33 E2E Playwright tests — all passing.
+- **Type-Safe API**: FastAPI with Pydantic models + TypeScript frontend services with strict typing.
+- **Concurrent-Safe ID Generation**: PostgreSQL advisory locks serialize collection ID generation per country code.
+- **Database Triggers**: Auto-increment collection IDs, depth-limit enforcement, session-limit enforcement, cycle detection.
+- **Zero Hardcoded Strings**: Full i18n compliance across all admin and public pages in both English and Arabic.
+
+---
+
 ## 🚀 1. Fast Track (5-Minute Setup)
 
 ### 1.1 Prerequisites

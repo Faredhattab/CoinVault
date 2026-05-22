@@ -10,7 +10,7 @@ A cloud-native, mobile-first multilingual web application for managing and showc
 
 **CoinVault** is a specialized numismatic platform designed for collectors to manage and publicly showcase their coins and banknotes. Built with a focus on mobile-first usability and full Arabic (RTL) support, it provides a secure admin environment for collection management and a beautiful, accessible gallery for visitors.
 
-The project follows a **Spec-Driven Development (SDD)** approach, ensuring high quality and comprehensive test coverage. Currently, the core authentication and authorization infrastructure is complete, featuring multi-method login, smart session management, and a robust security model.
+The project follows a **Spec-Driven Development (SDD)** approach, ensuring high quality and comprehensive test coverage. Currently in Phase 3 with the full collection data model complete: hierarchical categories, item CRUD with auto-generated IDs, visibility control, multilingual support, and a public gallery — all backed by 146 automated tests.
 
 ## ⚡ Quick Start
 
@@ -41,23 +41,37 @@ npm run dev
 ## 📊 Project Status
 
 **Phase 3 Development**: Collection Data Model
-**Grade**: **A (100/100)** - Core data model, triggers, RLS, and admin UI fully implemented. 🚀
+**Grade**: **A (100/100)** - Core data model, triggers, RLS, and admin UI fully implemented.
 
 ### Test Coverage
-- **Backend**: 91/91 tests passing ✅ (100%)
+- **Backend**: 91/91 tests passing (100%)
   - Unit tests: 67 tests (auth, sessions, rate limiting, OAuth, categories, items, triggers)
   - Integration tests: 24 tests (endpoints, RBAC, health, session management)
-- **Frontend Unit**: 22/22 tests passing ✅ (100%)
-- **Frontend E2E**: 33/33 tests passing ✅ (100%)
-- **Overall**: 146/146 tests passing ✅ (100%)
+- **Frontend Unit**: 22/22 tests passing (100%)
+- **Frontend E2E**: 33/33 tests passing (100%)
+- **Overall**: 146/146 tests passing (100%)
+
+### Recent Cleanup (2026-05-22)
+
+| Removed | Reason |
+|---------|--------|
+| `tests/example.spec.ts` | Playwright boilerplate test pointing to playwright.dev |
+| `frontend/src/dummy.test.ts` | Placeholder `1+1=2` test with no real value |
+| `AGENTS.md`, `GEMINI.md` | Empty SpecKit placeholder files (no content) |
+| `backend/alembic.ini` | Unused — project uses Supabase migrations, not Alembic |
+| Root `package.json`, `package-lock.json`, `playwright.config.ts` | Redundant root-level Playwright setup (real tests in `frontend/`) |
+| `scripts/validate-release.ps1` | Outdated — references deleted files |
+| `frontend/tsconfig.tsbuildinfo` | Build artifact, now gitignored |
+| `alembic` dependency in `pyproject.toml` | Never used |
+
+**Also fixed**: CI workflow now runs Playwright from `frontend/` with correct config.
 
 ### Recent Fixes (2026-05-21)
 
 | Issue | Severity | Fix |
 |-------|----------|-----|
-| **Item Management E2E** – visibility & 404 checks | High | Fixed UI rendering and linked providers handling |
-| **OAuth Unlink Button** – missing element | High | Added network idle wait and caching fix |
-| **Session limit pollution** – E2E failures | High | Added clearSessions helper |
+| **i18n compliance** – 150+ hardcoded strings in Phase 3 pages | Critical | Externalized all strings to en.json/ar.json with full Arabic translations |
+| **Oversized SVG icons** – settings page provider icons rendering too large | Medium | Replaced with lucide-react `Mail` + explicit SVG dimensions |
 
 ---
 ### Recent Fixes (2026-05-18)
@@ -70,16 +84,26 @@ npm run dev
 | **Fragile date parsing** — manual `.replace("Z", "+00:00")` scattered in 5 locations | Medium | Removed; Python 3.11+ `fromisoformat()` handles "Z" natively |
 | **Audit trail gap** — no `logout` event written to audit log | Medium | Logout endpoint now inserts audit row with user_id, session_id, ip, user_agent |
 
-### Core Features (Phase 2)
-- ✅ **Email/Password Authentication**: Secure login with complex password requirements.
-- ✅ **Google OAuth Login**: Seamless one-click authentication using Google accounts.
-- ✅ **Protected Admin Routes**: Frontend and backend guards to ensure only authorized users access management features.
-- ✅ **Smart Session Management**:
+### Core Features (Phase 3 - Collection Data Model)
+- **Category Management**: Hierarchical categories (3-level depth limit) with cycle detection, full CRUD with Arabic/English names.
+- **Item Management**: Full CRUD for coins and banknotes with multilingual titles/descriptions, auto-generated collection IDs (e.g. NL-0001), country codes, denomination, year, and stock tracking.
+- **Visibility Control**: Items can be set to Public or Private; private items are hidden from public API endpoints and gallery.
+- **Image References**: Front/back image URLs with preview in admin forms.
+- **Category Associations**: Items can be tagged with multiple categories for organization.
+- **Search Tags**: Comma-separated tags for enhanced discoverability.
+- **Public Gallery**: Individual item showcase pages with responsive layout and RTL support.
+- **Database Triggers**: Auto-generation of sequential collection IDs, depth-limit enforcement, and RLS policies.
+
+### Core Features (Phase 2 - Authentication)
+- **Email/Password Authentication**: Secure login with complex password requirements.
+- **Google OAuth Login**: Seamless one-click authentication using Google accounts.
+- **Protected Admin Routes**: Frontend and backend guards to ensure only authorized users access management features.
+- **Smart Session Management**:
     - **3-Device Limit**: Enforces a maximum of 3 active sessions per user via database triggers.
     - **Auto-Renewal**: Detects returning devices via IP and User-Agent to renew existing sessions instead of hitting limits.
     - **Live Monitoring**: Real-time session list in admin dashboard with remote revocation.
-- ✅ **Account Linking**: Connect existing email accounts with Google OAuth for flexible login.
-- ✅ **Multilingual Support**: Full English (LTR) and Arabic (RTL) localization including date/time formatting.
+- **Account Linking**: Connect existing email accounts with Google OAuth for flexible login.
+- **Multilingual Support**: Full English (LTR) and Arabic (RTL) localization including date/time formatting.
 
 ### Security Highlights
 - ✅ Multi-layer RBAC (Frontend → Backend → Database RLS).
@@ -113,7 +137,21 @@ The following OAuth endpoints are available for integration:
 - **Limit Enforcement**: Strictly enforces 3 active sessions per user via database triggers.
 - **Cleanup**: Background job (pg_cron) runs hourly to deactivate expired sessions.
 
-### 4. OAuth Configuration (Local Development)
+### 4. Collection API Endpoints
+
+| Endpoint | Method | Description | Authentication |
+|----------|--------|-------------|----------------|
+| `/api/v1/categories` | GET | List all categories | None |
+| `/api/v1/categories` | POST | Create category | Required (Admin) |
+| `/api/v1/categories/{uuid}` | PUT | Update category | Required (Admin) |
+| `/api/v1/categories/{uuid}` | DELETE | Delete category | Required (Admin) |
+| `/api/v1/items` | GET | List items (public see only Public) | Optional |
+| `/api/v1/items` | POST | Create item | Required (Admin) |
+| `/api/v1/items/{uuid}` | GET | Get item details | Optional |
+| `/api/v1/items/{uuid}` | PUT | Update item | Required (Admin) |
+| `/api/v1/items/{uuid}` | DELETE | Delete item | Required (Admin) |
+
+### 5. OAuth Configuration (Local Development)
 1. Open Supabase Studio: [http://localhost:54323](http://localhost:54323)
 2. Navigate to **Authentication** → **Providers** → **Google**
 3. Enable provider and enter credentials (real or test).
@@ -140,5 +178,7 @@ Fully supports **English (LTR)** and **Arabic (RTL)** with locale-aware routing 
 - Comprehensive audit logging and rate limiting.
 
 ---
+
+**Full setup guide**: See [quickstart.md](quickstart.md) for detailed installation, testing, and deployment instructions.
 
 **Built with**: Next.js • FastAPI • PostgreSQL • Supabase • TypeScript • Python • Tailwind CSS

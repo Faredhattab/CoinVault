@@ -9,7 +9,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { authService } from '@/services/auth-service';
-import { Link as LinkIcon, Unlink, AlertCircle, CheckCircle, Shield, User } from 'lucide-react';
+import { Link as LinkIcon, Unlink, AlertCircle, CheckCircle, Shield, User, Mail } from 'lucide-react';
 
 interface UserProfile {
   id: string;
@@ -32,7 +32,7 @@ export default function SettingsPage() {
       if (params.get('linked') === 'google') {
         setMessage({
           type: 'success',
-          text: t('linkSuccess') || 'Google account linked successfully',
+          text: t('linkSuccess'),
         });
         // Clear query parameters
         const newUrl = window.location.pathname;
@@ -48,7 +48,7 @@ export default function SettingsPage() {
       setUser(userData);
     } catch (error) {
       console.error('Failed to load user:', error);
-      setMessage({ type: 'error', text: t('loadError') || 'Failed to load user data' });
+      setMessage({ type: 'error', text: t('loadError') });
     } finally {
       setLoading(false);
     }
@@ -66,7 +66,7 @@ export default function SettingsPage() {
       console.error('Failed to initiate Google linking:', error);
       setMessage({
         type: 'error',
-        text: error.message || t('linkError') || 'Failed to link Google account',
+        text: error.message || t('linkError'),
       });
       setActionLoading(null);
     }
@@ -76,18 +76,14 @@ export default function SettingsPage() {
     if (!user) return;
 
     // Confirm before unlinking
-    const confirmed = confirm(
-      t('confirmUnlink') || 'Are you sure you want to unlink your Google account?'
-    );
+    const confirmed = confirm(t('confirmUnlink'));
     if (!confirmed) return;
 
     // Check if this is the last provider
     if (user.linked_providers.length === 1) {
       setMessage({
         type: 'error',
-        text:
-          t('lastProviderError') ||
-          'Cannot unlink the last authentication provider. Add another provider first.',
+        text: t('lastProviderError'),
       });
       return;
     }
@@ -103,7 +99,7 @@ export default function SettingsPage() {
 
       setMessage({
         type: 'success',
-        text: t('unlinkSuccess') || 'Google account unlinked successfully',
+        text: t('unlinkSuccess'),
       });
     } catch (error: any) {
       console.error('Failed to unlink Google account:', error);
@@ -111,14 +107,12 @@ export default function SettingsPage() {
       if (error.message?.includes('last provider') || error.message?.includes('at least one')) {
         setMessage({
           type: 'error',
-          text:
-            t('lastProviderError') ||
-            'Cannot unlink the last authentication provider. Add another provider first.',
+          text: t('lastProviderError'),
         });
       } else {
         setMessage({
           type: 'error',
-          text: error.message || t('unlinkError') || 'Failed to unlink Google account',
+          text: error.message || t('unlinkError'),
         });
       }
     } finally {
@@ -140,7 +134,7 @@ export default function SettingsPage() {
   if (!user) {
     return (
       <div className="bg-[#ffd9d6] border border-[#7b1d17] text-[#7b1d17] p-4 rounded" role="alert">
-        {t('noUserData') || 'Failed to load user data'}
+        {t('noUserData')}
       </div>
     );
   }
@@ -148,7 +142,7 @@ export default function SettingsPage() {
   return (
     <div className="max-w-2xl">
       <h1 className="text-2xl font-bold text-[#20221f] mb-6">
-        {t('title') || 'Account Settings'}
+        {t('title')}
       </h1>
 
       {/* Success/Error Messages */}
@@ -173,22 +167,22 @@ export default function SettingsPage() {
       {/* Profile Information */}
       <section className="bg-white rounded-lg border border-[#d8dccf] p-5 mb-4">
         <h2 className="text-sm font-semibold text-[#5d6558] uppercase tracking-wide mb-3">
-          {t('profileSection') || 'Profile'}
+          {t('profileSection')}
         </h2>
         <div className="space-y-2.5 text-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[#5d6558]">{t('email') || 'Email'}</span>
+            <span className="text-[#5d6558]">{t('email')}</span>
             <span className="font-medium text-[#20221f]">{user.email}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-[#5d6558]">{t('role') || 'Role'}</span>
+            <span className="text-[#5d6558]">{t('role')}</span>
             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
               user.role === 'admin'
                 ? 'bg-[#20221f] text-white'
                 : 'bg-[#f7f7f2] text-[#5d6558] border border-[#d8dccf]'
             }`}>
               {user.role === 'admin' ? <Shield className="w-3 h-3" /> : <User className="w-3 h-3" />}
-              {user.role === 'admin' ? (t('adminRole') || 'Administrator') : (t('userRole') || 'User')}
+              {user.role === 'admin' ? t('adminRole') : t('userRole')}
             </span>
           </div>
         </div>
@@ -197,11 +191,10 @@ export default function SettingsPage() {
       {/* Linked Accounts */}
       <section className="bg-white rounded-lg border border-[#d8dccf] p-5">
         <h2 className="text-sm font-semibold text-[#5d6558] uppercase tracking-wide mb-1">
-          {t('linkedAccountsSection') || 'Linked Accounts'}
+          {t('linkedAccountsSection')}
         </h2>
         <p className="text-xs text-[#5d6558] mb-4">
-          {t('linkedAccountsDescription') ||
-            'Connect multiple authentication methods to your account for more flexibility.'}
+          {t('linkedAccountsDescription')}
         </p>
 
         <div className="space-y-3">
@@ -209,27 +202,20 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between px-3 py-3 border border-[#d8dccf] rounded-lg">
             <div className="flex items-center gap-2.5">
               <div className="bg-[#f7f7f2] p-1.5 rounded">
-                <svg className="w-4 h-4 text-[#3e443b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
+                <Mail className="w-4 h-4 text-[#3e443b]" />
               </div>
               <div>
                 <span className="text-sm font-medium text-[#20221f]">
-                  {t('emailPasswordProvider') || 'Email & Password'}
+                  {t('emailPasswordProvider')}
                 </span>
                 <span className="text-xs text-[#5d6558] ml-2">
-                  {isEmailLinked ? t('linked') || 'Linked' : t('notLinked') || 'Not linked'}
+                  {isEmailLinked ? t('linked') : t('notLinked')}
                 </span>
               </div>
             </div>
             {isEmailLinked && (
               <span className="text-xs font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded">
-                {t('active') || 'Active'}
+                {t('active')}
               </span>
             )}
           </div>
@@ -238,7 +224,7 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between px-3 py-3 border border-[#d8dccf] rounded-lg">
             <div className="flex items-center gap-2.5">
               <div className="bg-[#f7f7f2] p-1.5 rounded">
-                <svg className="w-4 h-4" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" width="16" height="16" viewBox="0 0 24 24">
                   <path
                     fill="#4285F4"
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -260,7 +246,7 @@ export default function SettingsPage() {
               <div>
                 <span className="text-sm font-medium text-[#20221f]">Google</span>
                 <span className="text-xs text-[#5d6558] ml-2">
-                  {isGoogleLinked ? t('linked') || 'Linked' : t('notLinked') || 'Not linked'}
+                  {isGoogleLinked ? t('linked') : t('notLinked')}
                 </span>
               </div>
             </div>
@@ -276,7 +262,7 @@ export default function SettingsPage() {
                 ) : (
                   <Unlink className="w-3 h-3" />
                 )}
-                <span>{t('unlink') || 'Unlink'}</span>
+                <span>{t('unlink')}</span>
               </button>
             ) : (
               <button
@@ -289,7 +275,7 @@ export default function SettingsPage() {
                 ) : (
                   <LinkIcon className="w-3 h-3" />
                 )}
-                <span>{t('link') || 'Link'}</span>
+                <span>{t('link')}</span>
               </button>
             )}
           </div>
@@ -300,8 +286,7 @@ export default function SettingsPage() {
           <div className="mt-4 bg-yellow-50 border border-yellow-200 text-yellow-800 px-3 py-2.5 rounded-lg flex items-center gap-2">
             <AlertCircle className="w-3.5 h-3.5 shrink-0" />
             <p className="text-xs">
-              {t('lastProviderWarning') ||
-                'You must have at least one authentication method linked to your account.'}
+              {t('lastProviderWarning')}
             </p>
           </div>
         )}

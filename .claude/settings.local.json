@@ -84,7 +84,15 @@
       "Bash(xargs -r docker rm -f)",
       "Bash(findstr :54322)",
       "Bash(supabase start *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(npx vitest *)",
+      "Bash(git diff *)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('/c/Users/fared/CoinVault/frontend/src/i18n/en.json'\\)\\); console.log\\('en.json: valid'\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('/c/Users/fared/CoinVault/frontend/src/i18n/ar.json'\\)\\); console.log\\('ar.json: valid'\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('C:/Users/fared/CoinVault/frontend/src/i18n/en.json'\\)\\); console.log\\('en.json: valid'\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('C:/Users/fared/CoinVault/frontend/src/i18n/ar.json'\\)\\); console.log\\('ar.json: valid'\\)\")",
+      "Bash(node *)",
+      "Bash(git ls-tree *)"
     ]
   }
 }
