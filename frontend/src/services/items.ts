@@ -135,7 +135,7 @@ export const itemsService = {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.detail || 'Failed to fetch items')
+      throw new Error(errorData.detail || '')
     }
 
     return response.json()
@@ -150,7 +150,7 @@ export const itemsService = {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.detail || 'Failed to fetch item')
+      throw new Error(errorData.detail || '')
     }
 
     return response.json()
@@ -166,7 +166,7 @@ export const itemsService = {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.detail || 'Failed to create item')
+      throw new Error(errorData.detail || '')
     }
 
     return response.json()
@@ -182,7 +182,7 @@ export const itemsService = {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.detail || 'Failed to update item')
+      throw new Error(errorData.detail || '')
     }
 
     return response.json()
@@ -197,7 +197,7 @@ export const itemsService = {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.detail || 'Failed to delete item')
+      throw new Error(errorData.detail || '')
     }
   },
 }

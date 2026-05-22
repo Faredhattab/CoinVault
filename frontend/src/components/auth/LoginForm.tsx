@@ -86,7 +86,7 @@ export function LoginForm() {
           <ShieldCheck className="w-8 h-8" />
         </div>
         <h1 className="text-3xl font-bold text-[#20221f] mb-2">{t('loginTitle')}</h1>
-        <p className="text-[#5d6558]">Secure access to CoinVault administration</p>
+        <p className="text-[#5d6558]">{t('loginSubtitle')}</p>
       </div>
 
       <form

@@ -39,6 +39,7 @@
   },
   "auth": {
     "loginTitle": "تسجيل دخول المسئول",
+    "loginSubtitle": "الوصول الآمن لإدارة CoinVault",
     "emailLabel": "البريد الإلكتروني",
     "passwordLabel": "كلمة المرور",
     "loginButton": "تسجيل الدخول",

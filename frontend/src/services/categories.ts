@@ -48,7 +48,7 @@ export const categoriesService = {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.detail || 'Failed to fetch categories')
+      throw new Error(errorData.detail || '')
     }
 
     return response.json()
@@ -63,7 +63,7 @@ export const categoriesService = {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.detail || 'Failed to fetch category')
+      throw new Error(errorData.detail || '')
     }
 
     return response.json()
@@ -79,7 +79,7 @@ export const categoriesService = {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.detail || 'Failed to create category')
+      throw new Error(errorData.detail || '')
     }
 
     return response.json()
@@ -95,7 +95,7 @@ export const categoriesService = {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.detail || 'Failed to update category')
+      throw new Error(errorData.detail || '')
     }
 
     return response.json()
@@ -110,7 +110,7 @@ export const categoriesService = {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.detail || 'Failed to delete category')
+      throw new Error(errorData.detail || '')
     }
   },
 }

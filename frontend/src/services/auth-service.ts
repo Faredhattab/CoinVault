@@ -85,7 +85,7 @@ export const authService = {
 
     if (!response.ok) {
       const errorData = await response.json()
-      throw new Error(errorData.detail || 'Failed to fetch sessions')
+      throw new Error(errorData.detail || '')
     }
 
     return await response.json()
@@ -104,7 +104,7 @@ export const authService = {
 
     if (!response.ok) {
       const errorData = await response.json()
-      throw new Error(errorData.detail || 'Failed to revoke session')
+      throw new Error(errorData.detail || '')
     }
   },
 
@@ -179,7 +179,7 @@ export const authService = {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.detail?.message || errorData.detail || 'Failed to initiate OAuth linking')
+        throw new Error(errorData.detail?.message || errorData.detail || '')
       }
 
       const data = await response.json()
@@ -190,7 +190,7 @@ export const authService = {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.detail?.message || errorData.detail || 'Failed to initiate OAuth flow')
+        throw new Error(errorData.detail?.message || errorData.detail || '')
       }
 
       const data = await response.json()
@@ -211,7 +211,7 @@ export const authService = {
 
     if (!response.ok) {
       const errorData = await response.json()
-      throw new Error(errorData.detail?.message || errorData.detail || 'Failed to unlink Google account')
+      throw new Error(errorData.detail?.message || errorData.detail || '')
     }
 
     sessionStorage.removeItem(USER_CACHE_KEY)
@@ -269,7 +269,7 @@ export const authService = {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.detail?.message || errorData.detail || 'Failed to link Google account')
+        throw new Error(errorData.detail?.message || errorData.detail || '')
       }
 
       sessionStorage.removeItem(USER_CACHE_KEY)

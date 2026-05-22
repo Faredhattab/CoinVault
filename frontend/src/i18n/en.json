@@ -39,6 +39,7 @@
   },
   "auth": {
     "loginTitle": "Admin Login",
+    "loginSubtitle": "Secure access to CoinVault administration",
     "emailLabel": "Email",
     "passwordLabel": "Password",
     "loginButton": "Login",
