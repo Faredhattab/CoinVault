@@ -15,9 +15,12 @@
     "description": "أساس إدارة المجموعة الخاصة جاهز للمصادقة وسير عمل العناصر في المراحل القادمة.",
     "publicLink": "فتح الواجهة العامة",
     "healthLink": "فحص حالة الأساس",
+    "healthDesc": "فحص ركائز النظام الأساسية",
     "sessionsLink": "إدارة الجلسات النشطة",
+    "sessionsDesc": "إدارة نقاط تسجيل الدخول النشطة",
     "dashboardLink": "لوحة القيادة",
     "settingsLink": "الإعدادات",
+    "settingsDesc": "تكوين وتأمين الحساب",
     "categoriesLink": "الفئات",
     "itemsLink": "العناصر",
     "navTitle": "الإدارة"

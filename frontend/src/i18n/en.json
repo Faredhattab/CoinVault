@@ -15,9 +15,12 @@
     "description": "The private collection management foundation is ready for future authentication and item workflows.",
     "publicLink": "Open public shell",
     "healthLink": "Check foundation health",
+    "healthDesc": "Check system core foundations",
     "sessionsLink": "Manage active sessions",
+    "sessionsDesc": "Manage active login points",
     "dashboardLink": "Dashboard",
     "settingsLink": "Settings",
+    "settingsDesc": "Configure account and security",
     "categoriesLink": "Categories",
     "itemsLink": "Items",
     "navTitle": "Administration"

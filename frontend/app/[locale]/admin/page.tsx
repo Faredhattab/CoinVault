@@ -52,7 +52,7 @@ export default function AdminPlaceholder({
             </div>
             <div>
               <span className="font-bold text-[#20221f] block">{messages.admin.healthLink}</span>
-              <span className="text-sm text-[#5d6558]">Check system core foundations</span>
+              <span className="text-sm text-[#5d6558]">{messages.admin.healthDesc}</span>
             </div>
           </div>
         </Link>
@@ -67,7 +67,7 @@ export default function AdminPlaceholder({
             </div>
             <div>
               <span className="font-bold text-[#20221f] block">{messages.admin.sessionsLink}</span>
-              <span className="text-sm text-[#5d6558]">Manage active login points</span>
+              <span className="text-sm text-[#5d6558]">{messages.admin.sessionsDesc}</span>
             </div>
           </div>
         </Link>
@@ -82,7 +82,7 @@ export default function AdminPlaceholder({
             </div>
             <div>
               <span className="font-bold text-[#20221f] block">{messages.admin.settingsLink}</span>
-              <span className="text-sm text-[#5d6558]">Configure account and security</span>
+              <span className="text-sm text-[#5d6558]">{messages.admin.settingsDesc}</span>
             </div>
           </div>
         </Link>
