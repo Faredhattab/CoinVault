@@ -107,7 +107,28 @@ npm run dev
 | **Frontend Unit** | `cd frontend && npm test` | Vitest components/hooks |
 | **E2E (Playwright)** | `cd frontend && npx playwright test --workers=1` | Full browser flows (run serially to prevent session limit conflicts) |
 
-### 3.2 Manual Testing Checklist
+### 3.2 E2E Test Suite (Playwright)
+
+All E2E tests run from the `frontend/` directory. Use `--ui` to open the interactive Playwright inspector.
+
+| # | File | Description | Run individually |
+|---|------|-------------|-----------------|
+| 1 | `health-check.spec.ts` | Health dashboard service labels | `npx playwright test tests/e2e/health-check.spec.ts --ui` |
+| 2 | `placeholders-en.spec.ts` | English public/admin placeholder pages | `npx playwright test tests/e2e/placeholders-en.spec.ts --ui` |
+| 3 | `placeholders-ar.spec.ts` | Arabic RTL placeholder pages | `npx playwright test tests/e2e/placeholders-ar.spec.ts --ui` |
+| 4 | `auth-login.spec.ts` | Email/password login, validation, rate limiting | `npx playwright test tests/e2e/auth-login.spec.ts --ui` |
+| 5 | `auth-login-rtl.spec.ts` | Arabic RTL login layout and flow | `npx playwright test tests/e2e/auth-login-rtl.spec.ts --ui` |
+| 6 | `auth-oauth-login.spec.ts` | Google OAuth login (mock), error handling, cancellation | `npx playwright test tests/e2e/auth-oauth-login.spec.ts --ui` |
+| 7 | `auth-oauth-linking.spec.ts` | Link/unlink Google account from settings | `npx playwright test tests/e2e/auth-oauth-linking.spec.ts --ui` |
+| 8 | `auth-protected-routes.spec.ts` | Route guards and session persistence | `npx playwright test tests/e2e/auth-protected-routes.spec.ts --ui` |
+| 9 | `auth-role-access.spec.ts` | Admin/non-admin role enforcement | `npx playwright test tests/e2e/auth-role-access.spec.ts --ui` |
+| 10 | `auth-session.spec.ts` | Session persistence, concurrent limit, revocation | `npx playwright test tests/e2e/auth-session.spec.ts --ui` |
+| 11 | `admin-categories.spec.ts` | Category CRUD, nesting, depth limit enforcement | `npx playwright test tests/e2e/admin-categories.spec.ts --ui` |
+| 12 | `admin-items.spec.ts` | Item CRUD, visibility masking, public access control | `npx playwright test tests/e2e/admin-items.spec.ts --ui` |
+
+**Prerequisites**: Backend running on port 8000, database seeded (`python -m coinvault.db.seeds.run_seeds`), frontend dev server on port 3000.
+
+### 3.3 Manual Testing Checklist
 
 #### Basic Authentication
 - [ ] **Email Login**: Correct credentials vs incorrect.
@@ -158,7 +179,7 @@ npm run dev
 
 ---
 
-## ❓ 5. Troubleshooting
+## 5. Troubleshooting
 
 | Symptom | Common Fix |
 |---------|------------|
@@ -170,23 +191,6 @@ npm run dev
 
 ---
 
-## 6. Production Deployment Checklist
 
-- [ ] Set unique `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` for production
-- [ ] Set `INITIAL_ADMIN_EMAIL` and `INITIAL_ADMIN_PASSWORD` to strong credentials
-- [ ] Configure `CORS_ORIGINS` to production frontend domain only
-- [ ] Enable HTTPS on all endpoints
-- [ ] Set `SESSION_TIMEOUT_DAYS` appropriately (default: 7)
-- [ ] Configure Google OAuth redirect URIs for production domain in Google Cloud Console
-- [ ] Update `site_url` and `additional_redirect_urls` in Supabase Auth config
-- [ ] Remove placeholder keys and verify all `missing_required_values()` pass
-- [ ] Run database migrations on production Supabase instance
-- [ ] Seed initial admin account
-- [ ] Verify health check returns all services "ok"
-- [ ] Enable structured logging collection (e.g., CloudWatch, Datadog)
-- [ ] Set up rate limiting with Redis instead of in-memory store
-- [ ] Review RLS policies are active on all tables
-
----
 
 **For detailed feature specifications, see [README.md](README.md) and the specs directory.**

@@ -92,7 +92,15 @@
       "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('C:/Users/fared/CoinVault/frontend/src/i18n/en.json'\\)\\); console.log\\('en.json: valid'\\)\")",
       "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('C:/Users/fared/CoinVault/frontend/src/i18n/ar.json'\\)\\); console.log\\('ar.json: valid'\\)\")",
       "Bash(node *)",
-      "Bash(git ls-tree *)"
+      "Bash(git ls-tree *)",
+      "Bash(taskkill //F //FI \"IMAGENAME eq python.exe\")",
+      "Bash(taskkill //F //FI \"IMAGENAME eq python3.exe\")",
+      "Bash(pip show *)",
+      "Bash(taskkill //F //IM python3.13.exe)",
+      "Bash(python3 -m json.tool)",
+      "Bash(python3 -c \"import json,sys; cats=[c for c in json.load\\(sys.stdin\\) if c['name_en'].startswith\\('Test'\\)]; [print\\(c['uuid'], c['name_en']\\) for c in cats]\")",
+      "Bash(python3 -c \"import json,sys; cats=json.load\\(sys.stdin\\); [print\\(c['name_en']\\) for c in cats if c['name_en'].startswith\\('Test'\\)]\")",
+      "Bash(git mv *)"
     ]
   }
 }

@@ -78,7 +78,7 @@ test.describe('Google OAuth Login (US2)', () => {
     expect(html).toBe('rtl');
 
     // Verify Google button is present with Arabic text
-    const googleButton = page.locator('button', { has: page.locator('svg') }).filter({ hasText: /جوجل|Google/ });
+    const googleButton = page.locator('button', { has: page.locator('img[alt="Google"]') }).filter({ hasText: /جوجل|Google/ });
     await expect(googleButton).toBeVisible();
 
     // Verify button layout is RTL-friendly
